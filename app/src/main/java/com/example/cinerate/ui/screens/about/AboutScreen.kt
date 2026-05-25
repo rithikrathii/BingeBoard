@@ -164,7 +164,7 @@ fun AboutScreen(
                         
                         Spacer(modifier = Modifier.height(16.dp))
                         
-                        val team = listOf("Anna Müller", "Ben Hoffmann", "Clara Schmidt", "David Krause")
+                        val team = listOf("Rithik Kumar-31522", "Farhan Tahmid-31416", "Emre Banri-33672", "Cagla Yurdasal-34367")
                         team.forEachIndexed { index, name ->
                             TeamMemberRow(name = name, showDivider = index < team.lastIndex)
                         }
@@ -179,7 +179,7 @@ fun AboutScreen(
                 AboutInfoCard(
                     icon = Icons.Rounded.School,
                     title = "University",
-                    description = "Hochschule Rhein-Waal\nDistributed Systems Project"
+                    description = "Hochschule Rhein-Waal\nProgramming Distributed Systems Project\nGroup 05"
                 )
                 
                 Spacer(modifier = Modifier.height(16.dp))
