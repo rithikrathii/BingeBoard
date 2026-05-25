@@ -16,8 +16,12 @@ def serialize(movie):
 @router.get("/")
 def list_movies(page: int = 1, limit: int = Query(10, le=50)):
     """
-    page: page shown
-    limit: number of movies listed per page, default=10, max=50
+    Args:
+        page (int, optional): Current page. Defaults to 1.
+        limit (int, optional): Number of movies per page. Defaults to 10, max 50.
+
+    Returns:
+        List: Movies paginated by limit and offset.
     """
     offset = (page - 1) * limit  # skips the first page-1 pages on the current page
 
@@ -33,7 +37,7 @@ def search(
 ):
     """
     Args:
-        q (int): Search quesry string.
+        q (str): Search quesry string.
         page (int, optional): Page number to retrive. Defaults to 1.
         limit (int, optional): Number of movies per page. Defaults 10, max 50.
 
