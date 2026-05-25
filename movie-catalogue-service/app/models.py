@@ -11,6 +11,8 @@ class Movie(BaseModel):
     directors: Optional[List[str]] = None
     runtime: Optional[int] = None
     languages: Optional[List[str]] = None
+    rated: Optional[str] = None
+    plot: Optional[str] = None
     
     class Config:
         populate_by_name = True  
