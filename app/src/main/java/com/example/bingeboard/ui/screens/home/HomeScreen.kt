@@ -23,6 +23,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.bingeboard.R
 import com.example.bingeboard.ui.components.GenreChip
 import com.example.bingeboard.ui.components.MovieCard
 import com.example.bingeboard.ui.theme.Background

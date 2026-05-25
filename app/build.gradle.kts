@@ -7,11 +7,11 @@ plugins {
 }
 
 android {
-    namespace = "com.example.cinerate"
+    namespace = "com.example.bingeboard"
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.example.cinerate"
+        applicationId = "com.example.bingeboard"
         minSdk = 26
         targetSdk = 35
         versionCode = 1

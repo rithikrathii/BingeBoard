@@ -20,6 +20,7 @@ import androidx.compose.ui.unit.dp
 import com.example.bingeboard.data.model.Movie
 import com.example.bingeboard.ui.theme.CardSurface
 import com.example.bingeboard.ui.theme.SecondaryText
+import com.example.bingeboard.R
 
 @Composable
 fun MovieCard(

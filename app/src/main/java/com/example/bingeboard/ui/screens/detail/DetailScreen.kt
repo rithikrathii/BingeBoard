@@ -23,6 +23,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.bingeboard.R
 import com.example.bingeboard.ui.components.*
 import com.example.bingeboard.ui.theme.Background
 import com.example.bingeboard.ui.theme.SecondaryText
