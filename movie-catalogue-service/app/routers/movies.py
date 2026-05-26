@@ -3,17 +3,16 @@ from app.database import movie_collection
 from typing import List
 from bson import ObjectId
 
-# API endpoints
+# API endpoint object
 router = APIRouter()
 
-
-# helper function that converts ObjectId _id into str
 def serialize(movie):
+    """Converts MongoDB ObjectId _id field to string for JSON serialization."""
     movie["_id"] = str(movie["_id"])
     return movie
 
 
-# lists movies
+
 @router.get("/")
 def list_movies(page: int = 1, limit: int = Query(10, le=50)):
     """
@@ -31,7 +30,7 @@ def list_movies(page: int = 1, limit: int = Query(10, le=50)):
     return [serialize(m) for m in movies]  # serializes the movies and returns them
 
 
-# search by query string
+
 @router.get("/search")
 def search_movies(
     q: str = Query(..., min_length=1), page: int = 1, limit: int = Query(10, le=50)
@@ -59,7 +58,7 @@ def search_movies(
     return [serialize(m) for m in results_paginated]
 
 
-# filters movies
+
 @router.get("/filter")
 def filter_movies(
     genre: str = None,
