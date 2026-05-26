@@ -1,0 +1,13 @@
+fastapi
+uvicorn[standard]
+SQLAlchemy
+psycopg2-binary
+pydantic-settings
+python-dotenv
+python-json-logger
+email-validator
+passlib[bcrypt]
+PyJWT
+pytest
+httpx
+bcrypt==4.0.1
