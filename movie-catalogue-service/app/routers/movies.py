@@ -7,16 +7,11 @@ from bson import ObjectId
 router = APIRouter()
 
 
-<<<<<<< HEAD
 # helper function that converts ObjectId _id into str
-=======
-# converts ObjectId _id into str
->>>>>>> 48d07ae8304d8268c5f78723f0008a70dca3d363
 def serialize(movie):
     movie["_id"] = str(movie["_id"])
     return movie
 
-<<<<<<< HEAD
 
 # lists movies
 @router.get("/")
@@ -26,17 +21,6 @@ def list_movies(page: int = 1, limit: int = Query(10, le=50)):
         page (int, optional): Current page. Defaults to 1.
         limit (int, optional): Number of movies per page. Defaults to 10, max 50.
 
-=======
-
-# lists movies
-@router.get("/")
-def list_movies(page: int = 1, limit: int = Query(10, le=50)):
-    """
-    Args:
-        page (int, optional): Current page. Defaults to 1.
-        limit (int, optional): Number of movies per page. Defaults to 10, max 50.
-
->>>>>>> 48d07ae8304d8268c5f78723f0008a70dca3d363
     Returns:
         List: Movies paginated by limit and offset.
     """
@@ -49,11 +33,7 @@ def list_movies(page: int = 1, limit: int = Query(10, le=50)):
 
 # search by query string
 @router.get("/search")
-<<<<<<< HEAD
 def search_movies(
-=======
-def search(
->>>>>>> 48d07ae8304d8268c5f78723f0008a70dca3d363
     q: str = Query(..., min_length=1), page: int = 1, limit: int = Query(10, le=50)
 ):
     """
@@ -72,7 +52,6 @@ def search(
         {"$text": {"$search": q}}, {"score": {"$meta": "textScore"}}
     )
     # sorts results by relevance
-<<<<<<< HEAD
     results_sorted = results_unsorted.sort([("score", {"$meta": "textScore"})])
 
     # displays results based on current page and limit
@@ -135,11 +114,3 @@ def filter_movies(
     offset = (page - 1) * limit
     results = movie_collection.find(query).skip(offset).limit(limit)
     return [serialize(m) for m in results]
-=======
-    results_sorted = (
-        results_unsorted.sort([("score", {"$meta": "textScore"})]))
-    
-    # displays results based on current page and limit
-    results_paginated= results_sorted.skip(offset).limit(limit)
-    return [serialize(m) for m in results_paginated]
->>>>>>> 48d07ae8304d8268c5f78723f0008a70dca3d363
