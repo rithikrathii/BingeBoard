@@ -6,11 +6,11 @@ from bson import ObjectId
 # API endpoint object
 router = APIRouter()
 
+
 def serialize(movie):
     """Converts MongoDB ObjectId _id field to string for JSON serialization."""
     movie["_id"] = str(movie["_id"])
     return movie
-
 
 
 @router.get("/")
@@ -28,7 +28,6 @@ def list_movies(page: int = 1, limit: int = Query(10, le=50)):
     # fetches movies from the collection
     movies = movie_collection.find().skip(offset).limit(limit)
     return [serialize(m) for m in movies]  # serializes the movies and returns them
-
 
 
 @router.get("/search")
@@ -56,7 +55,6 @@ def search_movies(
     # displays results based on current page and limit
     results_paginated = results_sorted.skip(offset).limit(limit)
     return [serialize(m) for m in results_paginated]
-
 
 
 @router.get("/filter")
@@ -121,9 +119,34 @@ def list_genres():
     Returns:
         List[str]: Alphabetically sorted list of all unique genres in the database.
     """
-    distinct_genres = movie_collection.distinct("genres") # gets all unique genres from sample_mflix
-    sorted_genres=sorted(g for g in distinct_genres if g)
+    distinct_genres = movie_collection.distinct(
+        "genres"
+    )  # gets all unique genres from sample_mflix
+    sorted_genres = sorted(g for g in distinct_genres if g)
     return sorted_genres
-    
-    
-    
+
+
+@router.get("/{movie_id}")  # path parameter for selected movie
+def get_movie(movie_id: str):
+    """
+    Args:
+        movie_id (str): ID of the movie.
+
+    Raises:
+        HTTPException: Invalid ID.
+        HTTPException: ID not found.
+
+    Returns:
+        dict: Full movie document with _id converted to string.
+    """
+    # catches invalid object id in the url
+    try:
+        oid = ObjectId(movie_id)
+    except Exception:
+        raise HTTPException(status_code=400, detail="Invalid movie ID format")
+
+    # try to finds the movie with valid _id
+    movie_found = movie_collection.find_one({oid})
+    if movie_found is None:
+        raise HTTPException(status_code=404, detail="Movie not found")
+    return serialize(movie_found)
