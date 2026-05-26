@@ -1,6 +1,5 @@
 from fastapi import APIRouter, Query, HTTPException
 from app.database import movie_collection
-from typing import List
 from bson import ObjectId
 
 # API endpoint object
@@ -146,7 +145,7 @@ def get_movie(movie_id: str):
         raise HTTPException(status_code=400, detail="Invalid movie ID format")
 
     # try to finds the movie with valid _id
-    movie_found = movie_collection.find_one({oid})
+    movie_found = movie_collection.find_one({"_id": oid})
     if movie_found is None:
         raise HTTPException(status_code=404, detail="Movie not found")
     return serialize(movie_found)
