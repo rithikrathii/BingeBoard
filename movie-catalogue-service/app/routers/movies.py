@@ -114,3 +114,17 @@ def filter_movies(
     offset = (page - 1) * limit
     results = movie_collection.find(query).skip(offset).limit(limit)
     return [serialize(m) for m in results]
+
+
+@router.get("/genres")
+def list_genres():
+    """
+    Returns:
+        List[str]: Alphabetically sorted list of all unique genres in the database.
+    """
+    distinct_genres = movie_collection.distinct("genres") # gets all unique genres from sample_mflix
+    sorted_genres=sorted(g for g in distinct_genres if g)
+    return sorted_genres
+    
+    
+    
