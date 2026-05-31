@@ -67,6 +67,15 @@ MONGODB_URL=<MongoDB cluster URL from MongoDB Atlas>
    - Movie Catalogue: `http://10.0.2.2:8001`
 
 ### vi. Common Issues & Troubleshooting
+| Issue | Solution |
+|-------|----------|
+| Gradle sync fails in Android Studio | Go to File → Invalidate Caches → Restart Android Studio |
+| App shows connection error | Make sure Docker services are running via `docker compose up` |
+| Build errors in Android Studio | Go to Build → Clean Project → then Rebuild Project |
+| Android Studio can't find SDK | Go to File → Project Structure → SDK Location and set correct path |
+| App crashes on launch | Ensure AVD is running API 26 or higher |
+| Movies not loading | Make sure Movie Catalogue Service is running on port 8001 |
+| Login/Signup not working | Make sure Auth Service is running on port 8000 |
 
 ## Contribution Matrix
 | Name | Role | Contributions |
