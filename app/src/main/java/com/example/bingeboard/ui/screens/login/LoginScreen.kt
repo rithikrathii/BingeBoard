@@ -33,8 +33,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.example.bingeboard.R
 import com.example.bingeboard.ui.theme.*
+import com.example.bingeboard.R
 
 @Composable
 fun LoginScreen(

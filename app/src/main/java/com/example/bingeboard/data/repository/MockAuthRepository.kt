@@ -13,7 +13,7 @@ class MockAuthRepository @Inject constructor() : AuthRepository {
 
     private var currentUser: User? = null
 
-    override fun login(email: String, password: String): Result<User> {
+    override suspend fun login(email: String, password: String): Result<User> {
         val user = users.find { it.email == email && it.passwordHash == password }
         return if (user != null) {
             currentUser = user
@@ -23,7 +23,7 @@ class MockAuthRepository @Inject constructor() : AuthRepository {
         }
     }
 
-    override fun signup(fullName: String, email: String, password: String): Result<User> {
+    override suspend fun signup(fullName: String, email: String, password: String): Result<User> {
         if (users.any { it.email == email }) {
             return Result.failure(Exception("An account with this email already exists"))
         }
@@ -37,11 +37,11 @@ class MockAuthRepository @Inject constructor() : AuthRepository {
         return Result.success(newUser)
     }
 
-    override fun logout() {
+    override suspend fun logout() {
         currentUser = null
     }
 
-    override fun getCurrentUser(): User? = currentUser
+    override suspend fun getCurrentUser(): User? = currentUser
 
-    override fun isLoggedIn(): Boolean = currentUser != null
+    override suspend fun isLoggedIn(): Boolean = currentUser != null
 }

@@ -17,6 +17,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImage
 import com.example.bingeboard.data.model.Movie
 import com.example.bingeboard.ui.theme.CardSurface
 import com.example.bingeboard.ui.theme.SecondaryText
@@ -59,13 +60,21 @@ fun MovieCard(
                 ),
             contentAlignment = Alignment.Center
         ) {
-
-            Image(
-                painter = painterResource(imageRes),
-                contentDescription = "movie",
-                modifier = Modifier.fillMaxSize(),
-                contentScale = ContentScale.Crop
-            )
+            if (movie.posterUrl.isNotEmpty()) {
+                AsyncImage(
+                    model = movie.posterUrl,
+                    contentDescription = movie.title,
+                    modifier = Modifier.fillMaxSize(),
+                    contentScale = ContentScale.Crop
+                )
+            } else {
+                Image(
+                    painter = painterResource(imageRes),
+                    contentDescription = "movie",
+                    modifier = Modifier.fillMaxSize(),
+                    contentScale = ContentScale.Crop
+                )
+            }
         }
 
         Spacer(modifier = Modifier.width(16.dp))

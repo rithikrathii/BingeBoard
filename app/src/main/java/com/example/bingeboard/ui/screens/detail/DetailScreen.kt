@@ -23,10 +23,11 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.example.bingeboard.R
+import coil.compose.AsyncImage
 import com.example.bingeboard.ui.components.*
 import com.example.bingeboard.ui.theme.Background
 import com.example.bingeboard.ui.theme.SecondaryText
+import com.example.bingeboard.R
 
 @Composable
 fun DetailScreen(
@@ -73,12 +74,21 @@ fun DetailScreen(
                         ),
                         contentAlignment = Alignment.Center
                     ) {
-                        Image(
-                            painter = painterResource(imageRes),
-                            contentDescription = "movie",
-                            modifier = Modifier.fillMaxSize(),
-                            contentScale = ContentScale.Crop
-                        )
+                        if (movie.posterUrl.isNotEmpty()) {
+                            AsyncImage(
+                                model = movie.posterUrl,
+                                contentDescription = movie.title,
+                                modifier = Modifier.fillMaxSize(),
+                                contentScale = ContentScale.Crop
+                            )
+                        } else {
+                            Image(
+                                painter = painterResource(imageRes),
+                                contentDescription = "movie",
+                                modifier = Modifier.fillMaxSize(),
+                                contentScale = ContentScale.Crop
+                            )
+                        }
 
                     }
                 }

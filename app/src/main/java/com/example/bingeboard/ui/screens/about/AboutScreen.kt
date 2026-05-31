@@ -24,12 +24,12 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.example.bingeboard.R
 import com.example.bingeboard.ui.components.TeamMemberRow
 import com.example.bingeboard.ui.theme.Background
 import com.example.bingeboard.ui.theme.CardSurface
 import com.example.bingeboard.ui.theme.GoldAccent
 import com.example.bingeboard.ui.theme.SecondaryText
+import com.example.bingeboard.R
 
 @Composable
 fun AboutScreen(
@@ -164,7 +164,7 @@ fun AboutScreen(
                         
                         Spacer(modifier = Modifier.height(16.dp))
                         
-                        val team = listOf("Rithik Kumar-31522", "Farhan Tahmid-31416", "Emre Banri-33672", "Cagla Yurdasal-34367")
+                        val team = listOf("Rithik Kumar-31522", "Cagla Yurdasal-34367", "Farhan Tahmid-31416", "Emre Banri-33672")
                         team.forEachIndexed { index, name ->
                             TeamMemberRow(name = name, showDivider = index < team.lastIndex)
                         }
@@ -179,7 +179,7 @@ fun AboutScreen(
                 AboutInfoCard(
                     icon = Icons.Rounded.School,
                     title = "University",
-                    description = "Hochschule Rhein-Waal\nProgramming Distributed Systems Project\nGroup 05"
+                    description = "Hochschule Rhein-Waal\nDistributed Systems Project"
                 )
                 
                 Spacer(modifier = Modifier.height(16.dp))

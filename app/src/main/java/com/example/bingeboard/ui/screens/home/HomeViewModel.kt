@@ -1,12 +1,14 @@
 package com.example.bingeboard.ui.screens.home
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.bingeboard.data.model.Movie
 import com.example.bingeboard.data.model.User
 import com.example.bingeboard.data.repository.AuthRepository
 import com.example.bingeboard.data.repository.MovieRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 data class HomeUiState(
@@ -15,7 +17,8 @@ data class HomeUiState(
     val genres: List<String> = emptyList(),
     val selectedGenre: String = "All",
     val searchQuery: String = "",
-    val currentUser: User? = null
+    val currentUser: User? = null,
+    val isLoading: Boolean = false
 )
 
 @HiltViewModel
@@ -28,16 +31,24 @@ class HomeViewModel @Inject constructor(
     val uiState: StateFlow<HomeUiState> = _uiState.asStateFlow()
 
     init {
-        val movies = movieRepository.getAllMovies()
-        val genres = movieRepository.getGenres()
-        val user = authRepository.getCurrentUser()
-        _uiState.update { 
-            it.copy(
-                movies = movies, 
-                filteredMovies = movies,
-                genres = genres,
-                currentUser = user
-            ) 
+        loadData()
+    }
+
+    private fun loadData() {
+        viewModelScope.launch {
+            _uiState.update { it.copy(isLoading = true) }
+            val movies = movieRepository.getAllMovies()
+            val genres = listOf("All") + movieRepository.getGenres()
+            val user = authRepository.getCurrentUser()
+            _uiState.update { 
+                it.copy(
+                    movies = movies, 
+                    filteredMovies = movies,
+                    genres = genres,
+                    currentUser = user,
+                    isLoading = false
+                ) 
+            }
         }
     }
 
@@ -52,13 +63,21 @@ class HomeViewModel @Inject constructor(
     }
 
     private fun filterMovies() {
-        val currentState = _uiState.value
-        val filtered = currentState.movies.filter { movie ->
-            val matchesGenre = currentState.selectedGenre == "All" || movie.genre.contains(currentState.selectedGenre)
-            val matchesSearch = movie.title.contains(currentState.searchQuery, ignoreCase = true) ||
-                    movie.genre.any { it.contains(currentState.searchQuery, ignoreCase = true) }
-            matchesGenre && matchesSearch
+        viewModelScope.launch {
+            val currentState = _uiState.value
+            _uiState.update { it.copy(isLoading = true) }
+            
+            val filtered = if (currentState.selectedGenre == "All" && currentState.searchQuery.isEmpty()) {
+                currentState.movies
+            } else {
+                movieRepository.getAllMovies().filter { movie ->
+                    val matchesGenre = currentState.selectedGenre == "All" || movie.genre.contains(currentState.selectedGenre)
+                    val matchesSearch = movie.title.contains(currentState.searchQuery, ignoreCase = true) ||
+                            movie.genre.any { it.contains(currentState.searchQuery, ignoreCase = true) }
+                    matchesGenre && matchesSearch
+                }
+            }
+            _uiState.update { it.copy(filteredMovies = filtered, isLoading = false) }
         }
-        _uiState.update { it.copy(filteredMovies = filtered) }
     }
 }
