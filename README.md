@@ -17,7 +17,15 @@ The goal is to create a robust and scalable platform for browsing, rating and re
    * User authentication (Login & Signup)
 
 ### 2. Authentication Microservice
-- Coming soon
+* Technology: Python, FastAPI, PostgreSQL, Docker
+* Port: `8000`
+* Features:
+   * User registration
+   * User login
+   * Password hashing with bcrypt
+   * JWT-based authentication
+   * Protected `/auth/me` endpoint
+   * Role-based `/auth/admin-check` endpoint
 
 ### 3. Movie Catalogue Microservice
 - Coming soon
@@ -47,7 +55,7 @@ code group_1_05
 ### iii. Setting Up Environment Variables
 - Create a file named `.env` in the root of the project, next to `docker-compose.yml`, and add the following variables:
 
-MONGODB_URL=<MongoDB cluster URL from MongoDB Atlas>
+MONGO_URI=<MongoDB cluster URL from MongoDB Atlas>
 
 - A sample `.env.example` file is provided in the repository as a reference.
 
@@ -82,7 +90,7 @@ MONGODB_URL=<MongoDB cluster URL from MongoDB Atlas>
 |------|------|---------------|
 | | Project Lead | |
 | Rithik Kumar - 31522 | Android Frontend | UI implementation, Jetpack Compose screens, API integration, Navigation, Authentication flow |
-| | Auth Service | |
+| Emre Banri - 33672 | Auth Service | FastAPI authentication service, PostgreSQL integration, password hashing, JWT login flow, protected endpoints, Docker Compose integration and testing |
 | | Movie Service | |
 | | Reviews Service | |
 
