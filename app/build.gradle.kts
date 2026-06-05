@@ -76,6 +76,15 @@ dependencies {
     // Icons Extended
     implementation("androidx.compose.material:material-icons-extended:1.6.7")
 
+    // Retrofit + OkHttp
+    implementation(libs.retrofit)
+    implementation(libs.retrofit.gson)
+    implementation(libs.okhttp)
+    implementation(libs.okhttp.logging)
+
+    // DataStore
+    implementation(libs.datastore.preferences)
+
 }
 
 kapt {

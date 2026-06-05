@@ -97,11 +97,15 @@ class MockMovieRepository @Inject constructor() : MovieRepository {
         Review(5, 4, "Alex T.", "AT", "Oct 15, 2023", 5, "Hans Zimmer's score combined with the incredible visuals create an unforgettable experience.")
     )
 
-    override fun getAllMovies(): List<Movie> = movies
+    override suspend fun getAllMovies(): List<Movie> = movies
 
-    override fun getMovieById(id: Int): Movie? = movies.find { it.id == id }
+    override suspend fun getMovieById(id: Int): Movie? = movies.find { it.id == id }
 
-    override fun getReviewsForMovie(movieId: Int): List<Review> = reviews.filter { it.movieId == movieId }
+    override suspend fun getReviewsForMovie(movieId: Int): List<Review> = reviews.filter { it.movieId == movieId }
 
-    override fun getGenres(): List<String> = listOf("All", "Action", "Drama", "Sci-Fi", "Comedy", "Thriller")
+    override suspend fun getGenres(): List<String> = listOf("All", "Action", "Drama", "Sci-Fi", "Comedy", "Thriller")
+
+    override suspend fun searchMovies(query: String): List<Movie> = movies.filter { it.title.contains(query, ignoreCase = true) }
+
+    override suspend fun getMoviesByGenre(genre: String): List<Movie> = if (genre == "All") movies else movies.filter { it.genre.contains(genre) }
 }

@@ -4,8 +4,10 @@ import com.example.bingeboard.data.model.Movie
 import com.example.bingeboard.data.model.Review
 
 interface MovieRepository {
-    fun getAllMovies(): List<Movie>
-    fun getMovieById(id: Int): Movie?
-    fun getReviewsForMovie(movieId: Int): List<Review>
-    fun getGenres(): List<String>
+    suspend fun getAllMovies(): List<Movie>
+    suspend fun getMovieById(id: Int): Movie?
+    suspend fun getReviewsForMovie(movieId: Int): List<Review>
+    suspend fun getGenres(): List<String>
+    suspend fun searchMovies(query: String): List<Movie>
+    suspend fun getMoviesByGenre(genre: String): List<Movie>
 }
