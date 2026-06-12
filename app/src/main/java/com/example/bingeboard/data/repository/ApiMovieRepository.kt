@@ -58,4 +58,13 @@ class ApiMovieRepository @Inject constructor(
             emptyList()
         }
     }
+
+    override suspend fun addReview(movieId: String, review: Review): Boolean {
+        return try {
+            // TODO: connect to reviews service API when ready
+            true
+        } catch (e: Exception) {
+            false
+        }
+    }
 }

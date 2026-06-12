@@ -10,4 +10,7 @@ interface MovieRepository {
     suspend fun getGenres(): List<String>
     suspend fun searchMovies(query: String): List<Movie>
     suspend fun getMoviesByGenre(genre: String): List<Movie>
+
+    suspend fun addReview(movieId: String, review: Review): Boolean
+
 }
