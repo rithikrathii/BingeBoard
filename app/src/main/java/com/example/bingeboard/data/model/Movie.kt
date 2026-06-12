@@ -1,18 +1,40 @@
 package com.example.bingeboard.data.model
 
 data class Movie(
-    val id: Int,
-    val mongoId: String = "",       // original MongoDB _id for API calls
-    val title: String,
-    val genre: List<String>,        // e.g. ["Sci-Fi", "Thriller"]
-    val year: Int,
-    val duration: String,           // e.g. "2h 49m"
-    val rating: Double,             // IMDb-style, e.g. 8.7
-    val reviewCount: String,        // e.g. "1.6M"
-    val ageRating: String,          // e.g. "PG-13"
-    val description: String,
-    val posterRes: Int = 0,         // R.drawable.xxx — placeholder drawable
-    val posterUrl: String = "",     // URL string from API
-    val isTopRated: Boolean = false,
-    val topRatedLabel: String = "Top 20"
+    val id: String = "",
+    val title: String = "",
+    val plot: String = "",
+    val fullplot: String = "",
+    val genres: List<String> = emptyList(),
+    val runtime: Int = 0,
+    val cast: List<String> = emptyList(),
+    val poster: String = "",
+    val languages: List<String> = emptyList(),
+    val directors: List<String> = emptyList(),
+    val rated: String = "",
+    val year: Int = 0,
+    val released: String = "",
+    val countries: List<String> = emptyList(),
+    val type: String = "",
+    val imdb: ImdbRating = ImdbRating(),
+    val tomatoes: Tomatoes? = null,
+    val awards: Awards? = null,
+    val num_mflix_comments: Int = 0
+)
+
+data class ImdbRating(
+    val rating: Double = 0.0,
+    val votes: Int = 0,
+    val id: Int = 0
+)
+
+data class Awards(
+    val wins: Int = 0,
+    val nominations: Int = 0,
+    val text: String = ""
+)
+
+data class Tomatoes(
+    val fresh: Int = 0,
+    val rotten: Int = 0
 )

@@ -22,8 +22,8 @@ class ApiAuthRepository @Inject constructor(
             tokenDataStore.saveToken(response.accessToken)
             val userResponse = api.getCurrentUser("Bearer ${response.accessToken}")
             val user = User(
-                id = userResponse.id,
-                fullName = userResponse.email.substringBefore("@"), // API user doesn't have name
+                id = userResponse.id.toString(),
+                fullName = userResponse.email.substringBefore("@"),
                 email = userResponse.email,
                 passwordHash = ""
             )
@@ -38,7 +38,7 @@ class ApiAuthRepository @Inject constructor(
         return try {
             val response = api.register(RegisterRequest(email, password))
             val user = User(
-                id = response.id,
+                id = response.id.toString(),
                 fullName = fullName,
                 email = response.email,
                 passwordHash = ""
@@ -56,12 +56,12 @@ class ApiAuthRepository @Inject constructor(
 
     override suspend fun getCurrentUser(): User? {
         if (currentUser != null) return currentUser
-        
+
         val token = tokenDataStore.getToken() ?: return null
         return try {
             val userResponse = api.getCurrentUser("Bearer $token")
             val user = User(
-                id = userResponse.id,
+                id = userResponse.id.toString(),
                 fullName = userResponse.email.substringBefore("@"),
                 email = userResponse.email,
                 passwordHash = ""

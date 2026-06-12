@@ -21,15 +21,15 @@ class ApiMovieRepository @Inject constructor(
         }
     }
 
-    override suspend fun getMovieById(id: Int): Movie? {
-        // Since the interface uses Int id, and API uses String _id, 
-        // we might have an issue here if we don't have the mongoId.
-        // For now, let's assume we search in all movies.
-        return getAllMovies().find { it.id == id }
+    override suspend fun getMovieById(id: String): Movie? {
+        return try {
+            api.getMovieById(id).toMovie()
+        } catch (e: Exception) {
+            getAllMovies().find { it.id == id }
+        }
     }
 
-    override suspend fun getReviewsForMovie(movieId: Int): List<Review> {
-        // Movie catalogue API has no reviews. Return empty list.
+    override suspend fun getReviewsForMovie(movieId: String): List<Review> {
         return emptyList()
     }
 

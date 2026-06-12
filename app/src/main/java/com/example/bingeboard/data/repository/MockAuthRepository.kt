@@ -8,7 +8,7 @@ import javax.inject.Singleton
 class MockAuthRepository @Inject constructor() : AuthRepository {
 
     private val users = mutableListOf(
-        User(1, "Test User", "test@bingeboard.com", "test123")
+        User("1", "Test User", "test@bingeboard.com", "test123")
     )
 
     private var currentUser: User? = null
@@ -28,7 +28,7 @@ class MockAuthRepository @Inject constructor() : AuthRepository {
             return Result.failure(Exception("An account with this email already exists"))
         }
         val newUser = User(
-            id = users.size + 1,
+            id = (users.size + 1).toString(),
             fullName = fullName,
             email = email,
             passwordHash = password

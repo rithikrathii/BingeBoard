@@ -41,23 +41,18 @@ fun BingeBoardNavGraph(
     val navController = rememberNavController()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
-
     val scope = rememberCoroutineScope()
 
-    // Determine start destination asynchronously
     val isLoggedInState = produceState<Boolean?>(initialValue = null) {
         value = authRepository.isLoggedIn()
     }
 
     if (isLoggedInState.value == null) {
-        // Show a simple loading screen while checking auth status
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
             CircularProgressIndicator(color = GoldAccent)
         }
     } else {
         val startDestination = if (isLoggedInState.value == true) Screen.Home.route else Screen.Login.route
-
-        // Hide bottom bar on Login, Signup, and Detail screens
         val showBottomBar = currentDestination?.route in listOf(Screen.Home.route, Screen.About.route)
 
         Scaffold(
@@ -102,7 +97,7 @@ fun BingeBoardNavGraph(
                 composable(Screen.Home.route) {
                     HomeScreen(
                         onMovieClick = { movieId ->
-                            navController.navigate(Screen.Detail.createRoute(movieId))
+                            navController.navigate("detail/$movieId")
                         },
                         onLogout = {
                             scope.launch {
@@ -116,7 +111,7 @@ fun BingeBoardNavGraph(
                 }
                 composable(
                     route = Screen.Detail.route,
-                    arguments = listOf(navArgument("movieId") { type = NavType.IntType })
+                    arguments = listOf(navArgument("movieId") { type = NavType.StringType })
                 ) {
                     DetailScreen(
                         onBackClick = { navController.popBackStack() }
@@ -146,10 +141,7 @@ fun BingeBoardNavGraph(
 
 @Composable
 fun BottomBar(navController: NavHostController) {
-    val screens = listOf(
-        Screen.Home,
-        Screen.About
-    )
+    val screens = listOf(Screen.Home, Screen.About)
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
 
@@ -159,7 +151,6 @@ fun BottomBar(navController: NavHostController) {
     ) {
         screens.forEach { screen ->
             val isSelected = currentDestination?.hierarchy?.any { it.route == screen.route } == true
-            
             NavigationBarItem(
                 selected = isSelected,
                 onClick = {

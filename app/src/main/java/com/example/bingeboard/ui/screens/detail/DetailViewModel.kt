@@ -25,7 +25,7 @@ class DetailViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
-    private val movieId: Int = checkNotNull(savedStateHandle["movieId"])
+    private val movieId: String = checkNotNull(savedStateHandle["movieId"])
 
     private val _uiState = MutableStateFlow(DetailUiState())
     val uiState: StateFlow<DetailUiState> = _uiState.asStateFlow()

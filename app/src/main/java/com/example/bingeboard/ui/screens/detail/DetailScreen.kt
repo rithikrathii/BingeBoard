@@ -1,6 +1,5 @@
 package com.example.bingeboard.ui.screens.detail
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -19,7 +18,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -27,7 +25,6 @@ import coil.compose.AsyncImage
 import com.example.bingeboard.ui.components.*
 import com.example.bingeboard.ui.theme.Background
 import com.example.bingeboard.ui.theme.SecondaryText
-import com.example.bingeboard.R
 
 @Composable
 fun DetailScreen(
@@ -37,23 +34,11 @@ fun DetailScreen(
     val uiState by viewModel.uiState.collectAsState()
     val movie = uiState.movie ?: return
 
-
-    val imageRes = when(movie.posterRes){
-        0 -> R.drawable.movie
-        1 -> R.drawable.movie_2
-        2 -> R.drawable.movie_3
-        3 -> R.drawable.movie_2
-        4 -> R.drawable.movie
-        5 -> R.drawable.movie_3
-        else -> R.drawable.movie
-    }
-
     Box(modifier = Modifier.fillMaxSize().background(Background)) {
         LazyColumn(
             modifier = Modifier.fillMaxSize(),
             contentPadding = PaddingValues(bottom = 32.dp)
         ) {
-            // Hero Image
             item {
                 Box(
                     modifier = Modifier
@@ -74,27 +59,16 @@ fun DetailScreen(
                         ),
                         contentAlignment = Alignment.Center
                     ) {
-                        if (movie.posterUrl.isNotEmpty()) {
-                            AsyncImage(
-                                model = movie.posterUrl,
-                                contentDescription = movie.title,
-                                modifier = Modifier.fillMaxSize(),
-                                contentScale = ContentScale.Crop
-                            )
-                        } else {
-                            Image(
-                                painter = painterResource(imageRes),
-                                contentDescription = "movie",
-                                modifier = Modifier.fillMaxSize(),
-                                contentScale = ContentScale.Crop
-                            )
-                        }
-
+                        AsyncImage(
+                            model = movie.poster,
+                            contentDescription = movie.title,
+                            modifier = Modifier.fillMaxSize(),
+                            contentScale = ContentScale.Crop
+                        )
                     }
                 }
             }
 
-            // Movie Info
             item {
                 Column(
                     modifier = Modifier
@@ -110,7 +84,7 @@ fun DetailScreen(
                     Spacer(modifier = Modifier.height(12.dp))
 
                     Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                        movie.genre.forEach { genre ->
+                        movie.genres.forEach { genre ->
                             GenrePill(genre = genre)
                         }
                     }
@@ -118,7 +92,7 @@ fun DetailScreen(
                     Spacer(modifier = Modifier.height(12.dp))
 
                     Text(
-                        text = "${movie.year}  ·  ${movie.duration}  ·  ${movie.ageRating}",
+                        text = "${movie.year}  ·  ${movie.runtime} min  ·  ${movie.rated}",
                         style = MaterialTheme.typography.labelSmall,
                         color = SecondaryText
                     )
@@ -130,7 +104,7 @@ fun DetailScreen(
                     Spacer(modifier = Modifier.height(24.dp))
 
                     Text(
-                        text = movie.description,
+                        text = movie.plot,
                         style = MaterialTheme.typography.bodyMedium,
                         color = Color.White,
                         lineHeight = 22.sp
@@ -140,13 +114,11 @@ fun DetailScreen(
 
                     SectionHeader(
                         title = "Reviews",
-                        onActionClick = { /* TODO */ }
+                        onActionClick = { }
                     )
-
                 }
             }
 
-            // Reviews List
             items(uiState.reviews, key = { it.id }) { review ->
                 ReviewCard(
                     review = review,
@@ -155,7 +127,6 @@ fun DetailScreen(
             }
         }
 
-        // Back Button
         IconButton(
             onClick = onBackClick,
             modifier = Modifier
@@ -164,7 +135,7 @@ fun DetailScreen(
                 .size(20.dp)
                 .clip(CircleShape)
                 .background(Color.Black.copy(alpha = 0.5f))
-                .clickable{onBackClick()}
+                .clickable { onBackClick() }
         ) {
             Icon(
                 imageVector = Icons.Rounded.ArrowBackIosNew,

@@ -30,34 +30,34 @@ fun StatsBox(
         verticalAlignment = Alignment.CenterVertically
     ) {
         StatItem(
-            value = { StarRating(rating = movie.rating, showMaxRating = true) },
+            value = { StarRating(rating = movie.imdb.rating, showMaxRating = true) },
             label = "IMDb Rating"
         )
-        
+
         Box(modifier = Modifier.width(1.dp).height(24.dp).background(SecondaryText.copy(alpha = 0.3f)))
 
         StatItem(
             value = {
                 Text(
-                    text = movie.reviewCount,
+                    text = "${movie.imdb.votes}",
                     style = MaterialTheme.typography.titleMedium,
                     color = Color.White
                 )
             },
             label = "Reviews"
         )
-        
+
         Box(modifier = Modifier.width(1.dp).height(24.dp).background(SecondaryText.copy(alpha = 0.3f)))
 
         StatItem(
             value = {
                 Text(
-                    text = movie.topRatedLabel,
+                    text = movie.rated,
                     style = MaterialTheme.typography.titleMedium,
                     color = Color.White
                 )
             },
-            label = "All Time"
+            label = "Rated"
         )
     }
 }

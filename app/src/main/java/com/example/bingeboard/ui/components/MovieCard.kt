@@ -1,6 +1,5 @@
 package com.example.bingeboard.ui.components
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -14,14 +13,12 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.example.bingeboard.data.model.Movie
 import com.example.bingeboard.ui.theme.CardSurface
 import com.example.bingeboard.ui.theme.SecondaryText
-import com.example.bingeboard.R
 
 @Composable
 fun MovieCard(
@@ -29,16 +26,6 @@ fun MovieCard(
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-
-    val imageRes = when(movie.posterRes){
-        0 -> R.drawable.movie
-        1 -> R.drawable.movie_2
-        2 -> R.drawable.movie_3
-        3 -> R.drawable.movie_2
-        4 -> R.drawable.movie
-        5 -> R.drawable.movie_3
-        else -> R.drawable.movie
-    }
     Row(
         modifier = modifier
             .fillMaxWidth()
@@ -48,7 +35,6 @@ fun MovieCard(
             .padding(12.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        // Poster Placeholder
         Box(
             modifier = Modifier
                 .size(width = 110.dp, height = 110.dp)
@@ -60,21 +46,12 @@ fun MovieCard(
                 ),
             contentAlignment = Alignment.Center
         ) {
-            if (movie.posterUrl.isNotEmpty()) {
-                AsyncImage(
-                    model = movie.posterUrl,
-                    contentDescription = movie.title,
-                    modifier = Modifier.fillMaxSize(),
-                    contentScale = ContentScale.Crop
-                )
-            } else {
-                Image(
-                    painter = painterResource(imageRes),
-                    contentDescription = "movie",
-                    modifier = Modifier.fillMaxSize(),
-                    contentScale = ContentScale.Crop
-                )
-            }
+            AsyncImage(
+                model = movie.poster,
+                contentDescription = movie.title,
+                modifier = Modifier.fillMaxSize(),
+                contentScale = ContentScale.Crop
+            )
         }
 
         Spacer(modifier = Modifier.width(16.dp))
@@ -92,12 +69,14 @@ fun MovieCard(
 
             Spacer(modifier = Modifier.height(4.dp))
 
-            GenrePill(genre = movie.genre.first())
+            if (movie.genres.isNotEmpty()) {
+                GenrePill(genre = movie.genres.first())
+            }
 
             Spacer(modifier = Modifier.height(8.dp))
 
             Text(
-                text = movie.description,
+                text = movie.plot,
                 style = MaterialTheme.typography.bodyMedium,
                 color = SecondaryText,
                 maxLines = 2,
@@ -106,7 +85,7 @@ fun MovieCard(
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            StarRating(rating = movie.rating)
+            StarRating(rating = movie.imdb.rating)
         }
     }
 }
