@@ -63,21 +63,21 @@ class HomeViewModel @Inject constructor(
     }
 
     private fun filterMovies() {
-        viewModelScope.launch {
-            val currentState = _uiState.value
-            _uiState.update { it.copy(isLoading = true) }
+        val currentState = _uiState.value
 
-            val filtered = if (currentState.selectedGenre == "All" && currentState.searchQuery.isEmpty()) {
-                currentState.movies
-            } else {
-                movieRepository.getAllMovies().filter { movie ->
-                    val matchesGenre = currentState.selectedGenre == "All" || movie.genres.contains(currentState.selectedGenre)
-                    val matchesSearch = movie.title.contains(currentState.searchQuery, ignoreCase = true) ||
-                            movie.genres.any { it.contains(currentState.searchQuery, ignoreCase = true) }
-                    matchesGenre && matchesSearch
-                }
+        val filtered = if (currentState.selectedGenre == "All" && currentState.searchQuery.isEmpty()) {
+            currentState.movies
+        } else {
+            currentState.movies.filter { movie ->
+                val matchesGenre = currentState.selectedGenre == "All" ||
+                        movie.genres.contains(currentState.selectedGenre)
+                val matchesSearch = currentState.searchQuery.isEmpty() ||
+                        movie.title.contains(currentState.searchQuery, ignoreCase = true) ||
+                        movie.genres.any { it.contains(currentState.searchQuery, ignoreCase = true) }
+                matchesGenre && matchesSearch
             }
-            _uiState.update { it.copy(filteredMovies = filtered, isLoading = false) }
         }
+        _uiState.update { it.copy(filteredMovies = filtered) }
+
     }
 }

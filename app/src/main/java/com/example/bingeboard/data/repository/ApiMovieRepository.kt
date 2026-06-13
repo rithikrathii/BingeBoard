@@ -14,8 +14,13 @@ class ApiMovieRepository @Inject constructor(
 
     override suspend fun getAllMovies(): List<Movie> {
         return try {
-            val response = api.getMovies(limit = 50)
-            response.movies.map { it.toMovie() }
+            val allMovies = mutableListOf<Movie>()
+            for (page in 1..10) {
+                val response = api.getMovies(page = page, limit = 50)
+                if (response.isEmpty()) break
+                allMovies.addAll(response.map { it.toMovie() })
+            }
+            allMovies
         } catch (e: Exception) {
             emptyList()
         }
@@ -43,8 +48,7 @@ class ApiMovieRepository @Inject constructor(
 
     override suspend fun searchMovies(query: String): List<Movie> {
         return try {
-            val response = api.searchMovies(query = query)
-            response.movies.map { it.toMovie() }
+            api.searchMovies(query = query).map { it.toMovie() }
         } catch (e: Exception) {
             emptyList()
         }
@@ -52,8 +56,7 @@ class ApiMovieRepository @Inject constructor(
 
     override suspend fun getMoviesByGenre(genre: String): List<Movie> {
         return try {
-            val response = api.filterMovies(genre = genre)
-            response.movies.map { it.toMovie() }
+            api.filterMovies(genre = genre).map { it.toMovie() }
         } catch (e: Exception) {
             emptyList()
         }
@@ -61,7 +64,6 @@ class ApiMovieRepository @Inject constructor(
 
     override suspend fun addReview(movieId: String, review: Review): Boolean {
         return try {
-            // TODO: connect to reviews service API when ready
             true
         } catch (e: Exception) {
             false
