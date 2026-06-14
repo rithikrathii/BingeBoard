@@ -56,7 +56,7 @@ services:
       - "8002:8001"
     environment:
       - MONGO_URI=${MONGO_URI:-}
-      - JWT_SECRET=supersecretkey123
+      - JWT_SECRET=change-this-secret-key-at-least-32-bytes-long
     restart: unless-stopped
     depends_on:
       auth-service:
