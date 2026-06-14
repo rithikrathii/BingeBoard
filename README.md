@@ -28,7 +28,32 @@ The goal is to create a robust and scalable platform for browsing, rating and re
    * Role-based `/auth/admin-check` endpoint
 
 ### 3. Movie Catalogue Microservice
-- Coming soon
+* Technology: Python, FastAPI, MongoDB Atlas, Docker
+* Port: `8001`
+* Dataset: MongoDB `sample_mflix` (movies collection)
+* Features:
+   * Paginated movie listing (`GET /movies/`)
+   * Full-text search across title, plot and cast (`GET /movies/search`)
+   * Filter by genre, year range, rating and language (`GET /movies/filter`)
+   * List of all unique genres for UI dropdowns (`GET /movies/genres`)
+   * Single movie details by ID (`GET /movies/{id}`)
+   * Health check endpoint (`GET /health`)
+   * Structured JSON logging
+   * Non-root Docker container
+   * 11 passing pytest tests covering all endpoints, pagination, search, filtering and error handling
+
+#### Movie Catalogue Endpoints
+
+| Method | Endpoint | Description | Query/Path Parameters |
+|--------|----------|--------------|------------------------|
+| GET | `/movies/` | Paginated list of movies | `page` (default 1), `limit` (default 10, max 50) |
+| GET | `/movies/search` | Full-text search across title, plot, cast and genres, sorted by relevance | `q` (required), `page`, `limit` |
+| GET | `/movies/filter` | Filter movies by genre, year range, rating and language (any combination) | `genre`, `year_min`, `year_max`, `rated`, `language`, `page`, `limit` |
+| GET | `/movies/genres` | Alphabetically sorted list of all unique genres | none |
+| GET | `/movies/{movie_id}` | Full details of a single movie | `movie_id` (MongoDB ObjectId as string) |
+| GET | `/health` | Service health check | none |
+
+Interactive API documentation is available at `http://localhost:8001/docs` while the service is running.
 
 ### 4. Ratings & Reviews Microservice
 - Coming soon
@@ -88,10 +113,10 @@ Once running, the following services will be available:
 ## Contribution Matrix
 | Name | Role | Contributions |
 |------|------|---------------|
-| | Project Lead | |
+| Çağla Nur Yurdasal - 34367 | Project Lead | Coordinated team communication and task delegation, managed GitLab repository setup (docker-compose.yml, .gitignore, .env.example), resolved merge conflicts and onboarding issues, communicated with instructors regarding team changes (teammate withdrawal), in addition to full ownership of the Movie Catalogue Service (see below) |
 | Rithik Kumar - 31522 | Android Frontend | UI implementation, Jetpack Compose screens, API integration, Navigation, Authentication flow, Unit tests |
 | Emre Banri - 33672 | Auth Service | FastAPI authentication service, PostgreSQL integration, password hashing, JWT login flow, protected endpoints, Docker Compose integration and testing |
-| | Movie Service | |
+|Çağla Nur Yurdasal - 34367| Movie Catalogue Service | FastAPI movie catalogue microservice (endpoints for listing, search, filtering, genres, single movie lookup), MongoDB Atlas integration with sample_mflix dataset, Pydantic models, structured JSON logging, Dockerfile with non-root user, docker-compose integration, 11 pytest tests, API field alignment support for Android integration | | Movie Service | |
 | | Reviews Service | |
 
 ## Acknowledgements
