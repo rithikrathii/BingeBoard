@@ -1,6 +1,6 @@
 services:
   ratings-service:
-    build: .
+    build: ./ratings-micro-service
     container_name: ratings-service
     ports:
       - "8001:8001"
