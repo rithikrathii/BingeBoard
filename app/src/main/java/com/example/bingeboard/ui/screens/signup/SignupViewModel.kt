@@ -64,12 +64,12 @@ class SignupViewModel @Inject constructor(
             _uiState.update { it.copy(error = "Please enter your full name") }
             return
         }
-        
-        if (currentState.email.isBlank() || !currentState.email.contains("@")) {
-            _uiState.update { it.copy(error = "Please enter a valid email address") }
+
+        if (currentState.password.isBlank() || currentState.password.length < 8) {
+            _uiState.update { it.copy(error = "Password must be at least 8 characters") }
             return
         }
-        
+
         if (currentState.password.isBlank() || currentState.password.length < 6) {
             _uiState.update { it.copy(error = "Password must be at least 6 characters") }
             return
@@ -82,10 +82,7 @@ class SignupViewModel @Inject constructor(
 
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true, error = null) }
-            
-            // Simulate network delay
-            delay(1500)
-            
+
             val result = authRepository.signup(
                 currentState.fullName, 
                 currentState.email, 

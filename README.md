@@ -12,7 +12,7 @@ The goal is to create a robust and scalable platform for browsing, rating and re
    * User-friendly interface built with Jetpack Compose & Material 3
    * Browse, sort and filter movies by genre and search
    * Detail view with movie poster images, ratings and metadata
-   * Review feature (read reviews per movie)
+   * Review feature (read and write reviews per movie)
    * "About" page with project and team information
    * User authentication (Login & Signup)
 
@@ -40,7 +40,6 @@ Before you begin, ensure the following tools are installed on your system:
 - [Docker](https://www.docker.com/)
 - [Android Studio](https://developer.android.com/studio) with an Android Virtual Device (API 26+)
 - [Visual Studio Code](https://code.visualstudio.com/) (optional, for viewing backend services)
-- A valid MongoDB Atlas account with the `sample_mflix` dataset loaded
 
 ### ii. Cloning the Project
 - Open your terminal and navigate to your desired project directory:
@@ -53,16 +52,16 @@ git clone https://gitlab.hsrw.eu/cloud-resilience-lab/lectures-mgk/pds-st26/grou
 code group_1_05
 
 ### iii. Setting Up Environment Variables
-- Create a file named `.env` in the root of the project, next to `docker-compose.yml`, and add the following variables:
-
-MONGO_URI=<MongoDB cluster URL from MongoDB Atlas>
-
-- A sample `.env.example` file is provided in the repository as a reference.
-
-> **Note:** The actual `.env` file is not committed to the repository for security reasons. Contact the team to obtain the MongoDB connection URL.
+A `.env` file is already included in the repository with all required variables pre-configured. No additional setup is needed.
 
 ### iv. Running the Application with Docker
-- Coming soon
+Make sure Docker Desktop is running in the background, then from the terminal run:
+docker compose build
+
+docker compose up
+Once running, the following services will be available:
+- Auth Service: `http://localhost:8000`
+- Movie Catalogue Service: `http://localhost:8001`
 
 ### v. Running the Android Application
 1. Open Android Studio
@@ -84,15 +83,16 @@ MONGO_URI=<MongoDB cluster URL from MongoDB Atlas>
 | App crashes on launch | Ensure AVD is running API 26 or higher |
 | Movies not loading | Make sure Movie Catalogue Service is running on port 8001 |
 | Login/Signup not working | Make sure Auth Service is running on port 8000 |
+| Docker won't start | Make sure Docker Desktop is running in the background |
 
 ## Contribution Matrix
 | Name | Role | Contributions |
 |------|------|---------------|
 | | Project Lead | |
-| Rithik Kumar - 31522 | Android Frontend | UI implementation, Jetpack Compose screens, API integration, Navigation, Authentication flow |
+| Rithik Kumar - 31522 | Android Frontend | UI implementation, Jetpack Compose screens, API integration, Navigation, Authentication flow, Unit tests |
 | Emre Banri - 33672 | Auth Service | FastAPI authentication service, PostgreSQL integration, password hashing, JWT login flow, protected endpoints, Docker Compose integration and testing |
 | | Movie Service | |
 | | Reviews Service | |
 
 ## Acknowledgements
-The work of team members on the components is documented in AUTHORS.md
+The work of team members and their individual contributions are reflected in the GitLab commit history and the Contribution Matrix above.

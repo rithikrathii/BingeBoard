@@ -3,17 +3,36 @@ package com.example.bingeboard.data.remote.dto
 import com.google.gson.annotations.SerializedName
 
 data class MovieDto(
-    @SerializedName("_id")     val id: String,
-    @SerializedName("title")   val title: String,
-    @SerializedName("year")    val year: Int,
-    @SerializedName("genres")  val genres: List<String>,
-    @SerializedName("cast")    val cast: List<String>,
-    @SerializedName("poster")  val poster: String?,
-    @SerializedName("directors") val directors: List<String>,
-    @SerializedName("runtime") val runtime: Int?,
-    @SerializedName("languages") val languages: List<String>,
-    @SerializedName("rated")   val rated: String?,
-    @SerializedName("plot")    val plot: String?
+    @SerializedName("_id")     val id: String = "",
+    @SerializedName("title")   val title: String? = null,
+    @SerializedName("year")    val year: Int? = null,
+    @SerializedName("genres")  val genres: List<String>? = null,
+    @SerializedName("cast")    val cast: List<String>? = null,
+    @SerializedName("poster")  val poster: String? = null,
+    @SerializedName("directors") val directors: List<String>? = null,
+    @SerializedName("runtime") val runtime: Int? = null,
+    @SerializedName("languages") val languages: List<String>? = null,
+    @SerializedName("rated")   val rated: String? = null,
+    @SerializedName("plot")    val plot: String? = null,
+    @SerializedName("fullplot") val fullplot: String? = null,
+    @SerializedName("released") val released: String? = null,
+    @SerializedName("countries") val countries: List<String>? = null,
+    @SerializedName("type")    val type: String? = null,
+    @SerializedName("imdb")    val imdb: ImdbDto? = null,
+    @SerializedName("awards")  val awards: AwardsDto? = null,
+    @SerializedName("num_mflix_comments") val num_mflix_comments: Int? = null
+)
+
+data class ImdbDto(
+    @SerializedName("rating") val rating: Double? = null,
+    @SerializedName("votes")  val votes: Int? = null,
+    @SerializedName("id")     val id: Int? = null
+)
+
+data class AwardsDto(
+    @SerializedName("wins")         val wins: Int? = null,
+    @SerializedName("nominations")  val nominations: Int? = null,
+    @SerializedName("text")         val text: String? = null
 )
 
 data class MovieListResponse(

@@ -15,8 +15,6 @@
 local.properties
 .kotlin
 # Environment / secrets
-.env
-.env.*
 !.env.example
 
 # Python

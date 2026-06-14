@@ -138,7 +138,7 @@ fun AboutScreen(
                 AboutInfoCard(
                     icon = Icons.Rounded.Info,
                     title = "About This App",
-                    description = "BingeBoard is a movie discovery and rating platform designed to help users explore, review, and track their favorite films. Built with a focus on clean UI and intuitive navigation for the modern cinephile."
+                    description = "BingeBoard is a distributed movie review platform built as part of the Programming Distributed Systems course at Hochschule Rhein-Waal. It enables users to browse, rate, and review movies using a microservices architecture with RESTful APIs, containerized backend services, and a modern Android frontend."
                 )
                 
                 Spacer(modifier = Modifier.height(16.dp))
@@ -156,7 +156,7 @@ fun AboutScreen(
                             Icon(Icons.Rounded.Work, contentDescription = null, tint = GoldAccent, modifier = Modifier.size(16.dp))
                             Spacer(modifier = Modifier.width(8.dp))
                             Text(
-                                text = "Project Team",
+                                text = "Project Team - Group 5",
                                 style = MaterialTheme.typography.titleMedium,
                                 color = Color.White
                             )
@@ -178,8 +178,8 @@ fun AboutScreen(
             item {
                 AboutInfoCard(
                     icon = Icons.Rounded.School,
-                    title = "University",
-                    description = "Hochschule Rhein-Waal\nDistributed Systems Project"
+                    title = "University & Course",
+                    description = "Hochschule Rhein-Waal\nProgramming Distributed Systems\nSummer Term 2026\nInstructors: Prof. Dr. Matteo Große-Kampmann & Leah Hüser"
                 )
                 
                 Spacer(modifier = Modifier.height(16.dp))
