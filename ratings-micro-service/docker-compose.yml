@@ -1,0 +1,16 @@
+services:
+  ratings-service:
+    build: .
+    container_name: ratings-service
+    ports:
+      - "8001:8001"
+    env_file:
+      - .env
+    restart: unless-stopped
+    networks:
+      - shared_network
+
+networks:
+  shared_network:
+    name: shared_network
+    driver: bridge
