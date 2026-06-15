@@ -10,11 +10,15 @@ The goal is to create a robust and scalable platform for browsing, rating and re
 * Platform: Android Virtual Device (AVD)
 * Features:
    * User-friendly interface built with Jetpack Compose & Material 3
-   * Browse, sort and filter movies by genre and search
+   * Browse movies with infinite scroll pagination
+   * Search movies across full dataset
+   * Advanced filter by genre, year range, age rating and language
    * Detail view with movie poster images, ratings and metadata
-   * Review feature (read and write reviews per movie)
+   * Write, read and delete reviews with star ratings (1-5)
    * "About" page with project and team information
-   * User authentication (Login & Signup)
+   * User authentication
+   * Connected to all 3 backend microservices (Auth, Movie Catalogue, Ratings & Reviews)
+   * unit tests covering signup, login, search, filter, pagination and review validation
 
 ### 2. Authentication Microservice
 * Technology: Python, FastAPI, PostgreSQL, Docker
@@ -109,12 +113,16 @@ Once running, the following services will be available:
 | Movies not loading | Make sure Movie Catalogue Service is running on port 8001 |
 | Login/Signup not working | Make sure Auth Service is running on port 8000 |
 | Docker won't start | Make sure Docker Desktop is running in the background |
+| Reviews not loading | Make sure Ratings & Reviews Service is running on port 8002 |
+| Search not returning results | Try a partial word instead of full word (e.g. "Godfa" instead of "Godfather") |
+| App shows black screen on launch | Wait 10-15 seconds for all Docker services to fully start, then relaunch |
+| Review submission fails | Make sure you are logged in before submitting a review |
 
 ## Contribution Matrix
 | Name | Role | Contributions |
 |------|------|---------------|
 | Çağla Nur Yurdasal - 34367 | Project Lead | Coordinated team communication and task delegation, managed GitLab repository setup (docker-compose.yml, .gitignore, .env.example), resolved merge conflicts and onboarding issues, communicated with instructors regarding team changes (teammate withdrawal), in addition to full ownership of the Movie Catalogue Service (see below) |
-| Rithik Kumar - 31522 | Android Frontend | UI implementation, Jetpack Compose screens, API integration, Navigation, Authentication flow, Unit tests |
+| Rithik Kumar - 31522 | Android Frontend | UI implementation, Jetpack Compose screens, API integration, Navigation, Authentication flow, Infinite scroll pagination, Advanced filter UI (year, rating, language), Reviews integration (write/read/delete with star ratings), case-insensitive search, proper error messages for login/signup, 35 unit tests |
 | Emre Banri - 33672 | Auth Service | FastAPI authentication service, PostgreSQL integration, password hashing, JWT login flow, protected endpoints, Docker Compose integration and testing |
 |Çağla Nur Yurdasal - 34367| Movie Catalogue Service | FastAPI movie catalogue microservice (endpoints for listing, search, filtering, genres, single movie lookup), MongoDB Atlas integration with sample_mflix dataset, Pydantic models, structured JSON logging, Dockerfile with non-root user, docker-compose integration, 11 pytest tests, API field alignment support for Android integration | | Movie Service | |
 | | Reviews Service | |
