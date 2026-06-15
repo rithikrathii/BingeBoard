@@ -43,21 +43,21 @@ def search_movies(
         List: List of movies matching the search query and sorted by relevance.
     """
     offset = (page - 1) * limit
-
-   # Use regex for case-insensitive partial matching
-    import re
-    regex = re.compile(q, re.IGNORECASE)
     
-    # Search in title, plot and genres fields
-    results = movie_collection.find(
-        {"$or": [
-            {"title": {"$regex": regex}},
-            {"plot": {"$regex": regex}},
-            {"genres": {"$regex": regex}}
-        ]}
-    ).skip(offset).limit(limit)
+    # filters with search string and relevance
+    results_unsorted = movie_collection.find(
+            {"$text": {"$search": q}}, {"score": {"$meta": "textScore"}}
+        )
     
-    return [serialize(m) for m in results]
+    # sorts results by relevance, year and frequency
+    results_sorted = results_unsorted.sort([
+        ("score", {"$meta": "textScore"}),
+        ("year", 1)
+    ])
+    
+    # displays results based on current page and limit
+    results_paginated = results_sorted.skip(offset).limit(limit)
+    return [serialize(m) for m in results_paginated]
 
 
 @router.get("/filter")
