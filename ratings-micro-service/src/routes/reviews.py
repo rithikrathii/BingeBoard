@@ -5,8 +5,6 @@ from src.models.review import ReviewCreate
 from src.auth import get_current_user
 from datetime import datetime, timezone
 
-
-
 import logging
 logger = logging.getLogger(__name__)
 
@@ -19,6 +17,7 @@ def serialize_review(r):
         "user_id": str(r["user_id"]),
         "user_name": r.get("user_name", ""),
         "text": r["text"],
+        "rating": r.get("rating", 0),
         "created_at": r["created_at"],
         "updated_at": r["updated_at"]
     }
@@ -62,7 +61,7 @@ def add_review(data: ReviewCreate, user=Depends(get_current_user)):
 
     existing = reviews_collection.find_one({
         "movie_id": mid,
-        "user_id": ObjectId(user["user_id"])
+        "user_id": user["user_id"]
     })
     if existing:
         logger.warning(f"User {user['user_id']} already reviewed movie {data.movie_id}")
@@ -70,9 +69,10 @@ def add_review(data: ReviewCreate, user=Depends(get_current_user)):
 
     doc = {
         "movie_id": mid,
-        "user_id": ObjectId(user["user_id"]),
-        "user_name": user["user_name"],
+        "user_id": user["user_id"],
+        "user_name": data.user_name if data.user_name else user.get("user_name", "Anonymous"),
         "text": data.text,
+        "rating": data.rating if data.rating else 0,
         "created_at": datetime.now(timezone.utc),
         "updated_at": datetime.now(timezone.utc)
     }

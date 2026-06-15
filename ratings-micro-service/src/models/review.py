@@ -5,6 +5,8 @@ from datetime import datetime
 class ReviewCreate(BaseModel):
     movie_id: str
     text: str
+    user_name: Optional[str] = None
+    rating: Optional[int] = None
 
     @field_validator("text")
     @classmethod
@@ -19,5 +21,6 @@ class ReviewResponse(BaseModel):
     user_id: str
     user_name: str
     text: str
+    rating: Optional[int] = None
     created_at: datetime
     updated_at: datetime

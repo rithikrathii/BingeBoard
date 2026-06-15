@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.bingeboard.data.repository.AuthRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -58,20 +57,25 @@ class SignupViewModel @Inject constructor(
 
     fun onSignupClicked() {
         val currentState = _uiState.value
-        
-        // Validation
+
         if (currentState.fullName.isBlank() || currentState.fullName.length < 2) {
             _uiState.update { it.copy(error = "Please enter your full name") }
             return
         }
 
-        if (currentState.password.isBlank() || currentState.password.length < 8) {
-            _uiState.update { it.copy(error = "Password must be at least 8 characters") }
+        if (currentState.email.isBlank()) {
+            _uiState.update { it.copy(error = "Please enter your email address") }
             return
         }
 
-        if (currentState.password.isBlank() || currentState.password.length < 6) {
-            _uiState.update { it.copy(error = "Password must be at least 6 characters") }
+        val emailRegex = Regex("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$")
+        if (!emailRegex.matches(currentState.email)) {
+            _uiState.update { it.copy(error = "Please enter a valid email address") }
+            return
+        }
+
+        if (currentState.password.isBlank() || currentState.password.length < 8) {
+            _uiState.update { it.copy(error = "Password must be at least 8 characters") }
             return
         }
 
@@ -84,19 +88,27 @@ class SignupViewModel @Inject constructor(
             _uiState.update { it.copy(isLoading = true, error = null) }
 
             val result = authRepository.signup(
-                currentState.fullName, 
-                currentState.email, 
+                currentState.fullName,
+                currentState.email,
                 currentState.password
             )
-            
+
             if (result.isSuccess) {
                 _uiState.update { it.copy(isLoading = false, isSuccess = true) }
             } else {
-                _uiState.update { 
+                val errorMessage = result.exceptionOrNull()?.message ?: ""
+                val displayError = when {
+                    errorMessage.contains("422") -> "This email is already registered. Please login instead."
+                    errorMessage.contains("400") -> "This email is already registered. Please login instead."
+                    errorMessage.contains("409") -> "This email is already registered. Please login instead."
+                    errorMessage.contains("already") -> "This email is already registered. Please login instead."
+                    else -> "Signup failed. Please try again."
+                }
+                _uiState.update {
                     it.copy(
-                        isLoading = false, 
-                        error = result.exceptionOrNull()?.message ?: "Signup failed"
-                    ) 
+                        isLoading = false,
+                        error = displayError
+                    )
                 }
             }
         }

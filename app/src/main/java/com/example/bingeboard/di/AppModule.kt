@@ -3,6 +3,7 @@ package com.example.bingeboard.di
 import com.example.bingeboard.data.repository.*
 import com.example.bingeboard.data.remote.api.AuthApiService
 import com.example.bingeboard.data.remote.api.MovieApiService
+import com.example.bingeboard.data.remote.api.ReviewApiService
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
@@ -45,6 +46,18 @@ object NetworkModule {
 
     @Provides
     @Singleton
+    @Named("ratings")
+    fun provideRatingsRetrofit(): Retrofit = Retrofit.Builder()
+        .baseUrl("http://10.0.2.2:8002/")
+        .addConverterFactory(GsonConverterFactory.create())
+        .client(OkHttpClient.Builder()
+            .addInterceptor(HttpLoggingInterceptor().apply {
+                level = HttpLoggingInterceptor.Level.BODY
+            }).build())
+        .build()
+
+    @Provides
+    @Singleton
     fun provideMovieApiService(@Named("movie") retrofit: Retrofit): MovieApiService =
         retrofit.create(MovieApiService::class.java)
 
@@ -52,6 +65,11 @@ object NetworkModule {
     @Singleton
     fun provideAuthApiService(@Named("auth") retrofit: Retrofit): AuthApiService =
         retrofit.create(AuthApiService::class.java)
+
+    @Provides
+    @Singleton
+    fun provideReviewApiService(@Named("ratings") retrofit: Retrofit): ReviewApiService =
+        retrofit.create(ReviewApiService::class.java)
 }
 
 @Module

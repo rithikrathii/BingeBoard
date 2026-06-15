@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.bingeboard.data.model.Movie
 import com.example.bingeboard.data.model.Review
+import com.example.bingeboard.data.repository.AuthRepository
 import com.example.bingeboard.data.repository.MovieRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -20,12 +21,15 @@ data class DetailUiState(
     val reviewText: String = "",
     val reviewRating: Int = 5,
     val isSubmitting: Boolean = false,
-    val submitSuccess: Boolean = false
+    val submitSuccess: Boolean = false,
+    val currentUserName: String = "",
+    val currentUserEmail: String = ""
 )
 
 @HiltViewModel
 class DetailViewModel @Inject constructor(
     private val repository: MovieRepository,
+    private val authRepository: AuthRepository,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
@@ -43,7 +47,14 @@ class DetailViewModel @Inject constructor(
             _uiState.value = _uiState.value.copy(isLoading = true)
             val movie = repository.getMovieById(movieId)
             val reviews = repository.getReviewsForMovie(movieId)
-            _uiState.value = DetailUiState(movie = movie, reviews = reviews, isLoading = false)
+            val user = authRepository.getCurrentUser()
+            _uiState.value = DetailUiState(
+                movie = movie,
+                reviews = reviews,
+                isLoading = false,
+                currentUserName = user?.fullName ?: "Anonymous",
+                currentUserEmail = user?.email ?: ""
+            )
         }
     }
 
@@ -55,7 +66,7 @@ class DetailViewModel @Inject constructor(
         _uiState.value = _uiState.value.copy(reviewRating = rating)
     }
 
-    fun submitReview(reviewerName: String) {
+    fun submitReview() {
         val currentState = _uiState.value
         if (currentState.reviewText.isBlank()) return
 
@@ -64,8 +75,9 @@ class DetailViewModel @Inject constructor(
             val review = Review(
                 id = System.currentTimeMillis().toString(),
                 movieId = movieId,
-                reviewerName = reviewerName,
-                reviewerInitials = reviewerName.split(" ")
+                userId = currentState.currentUserEmail,
+                reviewerName = currentState.currentUserName,
+                reviewerInitials = currentState.currentUserName.split(" ")
                     .mapNotNull { it.firstOrNull()?.toString() }
                     .take(2)
                     .joinToString(""),
@@ -76,8 +88,10 @@ class DetailViewModel @Inject constructor(
             )
             val success = repository.addReview(movieId, review)
             if (success) {
+                // Reload reviews from API instead of adding locally
+                val updatedReviews = repository.getReviewsForMovie(movieId)
                 _uiState.value = _uiState.value.copy(
-                    reviews = _uiState.value.reviews + review,
+                    reviews = updatedReviews,
                     reviewText = "",
                     reviewRating = 5,
                     isSubmitting = false,
@@ -85,6 +99,17 @@ class DetailViewModel @Inject constructor(
                 )
             } else {
                 _uiState.value = _uiState.value.copy(isSubmitting = false)
+            }
+        }
+    }
+
+    fun deleteReview(reviewId: String) {
+        viewModelScope.launch {
+            val success = repository.deleteReview(reviewId)
+            if (success) {
+                _uiState.value = _uiState.value.copy(
+                    reviews = _uiState.value.reviews.filter { it.id != reviewId }
+                )
             }
         }
     }

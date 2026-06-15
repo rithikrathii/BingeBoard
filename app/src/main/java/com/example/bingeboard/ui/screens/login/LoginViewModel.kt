@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.bingeboard.data.repository.AuthRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -43,34 +42,47 @@ class LoginViewModel @Inject constructor(
 
     fun onLoginClicked() {
         val currentState = _uiState.value
-        
-        // Validation
-        if (currentState.email.isBlank() || !currentState.email.contains("@")) {
+
+        if (currentState.email.isBlank()) {
+            _uiState.update { it.copy(error = "Please enter your email address") }
+            return
+        }
+
+        if (!currentState.email.contains("@")) {
             _uiState.update { it.copy(error = "Please enter a valid email address") }
             return
         }
-        
-        if (currentState.password.isBlank() || currentState.password.length < 6) {
-            _uiState.update { it.copy(error = "Password must be at least 6 characters") }
+
+        if (currentState.password.isBlank()) {
+            _uiState.update { it.copy(error = "Please enter your password") }
+            return
+        }
+
+        if (currentState.password.length < 8) {
+            _uiState.update { it.copy(error = "Password must be at least 8 characters") }
             return
         }
 
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true, error = null) }
-            
-            // Simulate network delay
-            delay(1500)
-            
+
             val result = authRepository.login(currentState.email, currentState.password)
-            
+
             if (result.isSuccess) {
                 _uiState.update { it.copy(isLoading = false, isSuccess = true) }
             } else {
-                _uiState.update { 
+                val errorMessage = result.exceptionOrNull()?.message ?: ""
+                val displayError = when {
+                    errorMessage.contains("401") -> "Incorrect email or password. Please try again."
+                    errorMessage.contains("404") -> "No account found with this email. Please sign up."
+                    errorMessage.contains("422") -> "Invalid email or password format."
+                    else -> "Incorrect email or password. Please try again."
+                }
+                _uiState.update {
                     it.copy(
-                        isLoading = false, 
-                        error = result.exceptionOrNull()?.message ?: "Invalid email or password"
-                    ) 
+                        isLoading = false,
+                        error = displayError
+                    )
                 }
             }
         }

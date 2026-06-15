@@ -22,8 +22,12 @@ interface MovieApiService {
     @GET("movies/filter")
     suspend fun filterMovies(
         @Query("genre") genre: String? = null,
+        @Query("year_min") yearMin: Int? = null,
+        @Query("year_max") yearMax: Int? = null,
+        @Query("rated") rated: String? = null,
+        @Query("language") language: String? = null,
         @Query("page") page: Int = 1,
-        @Query("limit") limit: Int = 20
+        @Query("limit") limit: Int = 50
     ): List<MovieDto>
 
     @GET("movies/genres")

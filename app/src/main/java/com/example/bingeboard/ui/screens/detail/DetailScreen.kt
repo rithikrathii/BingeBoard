@@ -128,12 +128,14 @@ fun DetailScreen(
             items(uiState.reviews, key = { it.id }) { review ->
                 ReviewCard(
                     review = review,
-                    modifier = Modifier.padding(horizontal = 16.dp)
+                    modifier = Modifier.padding(horizontal = 16.dp),
+                    currentUserEmail = uiState.currentUserEmail,
+                    onDeleteClick = { reviewId -> viewModel.deleteReview(reviewId) }
                 )
             }
 
             // Write Review Form
-            item {
+            if (uiState.currentUserEmail.isNotEmpty()) item {
                 Spacer(modifier = Modifier.height(24.dp))
                 Card(
                     modifier = Modifier
@@ -195,7 +197,7 @@ fun DetailScreen(
                         Spacer(modifier = Modifier.height(12.dp))
 
                         Button(
-                            onClick = { viewModel.submitReview("Anonymous") },
+                            onClick = { viewModel.submitReview() },
                             modifier = Modifier.fillMaxWidth().height(48.dp),
                             shape = RoundedCornerShape(8.dp),
                             colors = ButtonDefaults.buttonColors(
