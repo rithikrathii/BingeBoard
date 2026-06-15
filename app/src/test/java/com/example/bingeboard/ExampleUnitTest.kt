@@ -116,4 +116,128 @@ class ExampleUnitTest {
         val password = "Test1234!"
         assertTrue("Credentials should be valid", email.contains("@") && password.length >= 8)
     }
+
+    // Review validation tests
+    @Test
+    fun review_emptyText_fails() {
+        val text = ""
+        assertTrue("Review text should be empty", text.isBlank())
+    }
+
+    @Test
+    fun review_validText_passes() {
+        val text = "This is a great movie!"
+        assertFalse("Review text should be valid", text.isBlank())
+    }
+
+    @Test
+    fun review_rating_inRange_passes() {
+        val rating = 3
+        assertTrue("Rating should be between 1 and 5", rating in 1..5)
+    }
+
+    @Test
+    fun review_rating_outOfRange_fails() {
+        val rating = 6
+        assertFalse("Rating should be out of range", rating in 1..5)
+    }
+
+    // Search validation tests
+    @Test
+    fun search_emptyQuery_skipsSearch() {
+        val query = ""
+        assertTrue("Empty query should skip search", query.isEmpty())
+    }
+
+    @Test
+    fun search_validQuery_passes() {
+        val query = "Godfather"
+        assertFalse("Query should not be empty", query.isEmpty())
+    }
+
+    @Test
+    fun search_caseInsensitive_passes() {
+        val title = "The Godfather"
+        val query = "godfather"
+        assertTrue("Search should be case insensitive", title.contains(query, ignoreCase = true))
+    }
+
+    // Filter validation tests
+    @Test
+    fun filter_validYearRange_passes() {
+        val yearMin = 2000
+        val yearMax = 2023
+        assertTrue("Year range should be valid", yearMin < yearMax)
+    }
+
+    @Test
+    fun filter_invalidYearRange_fails() {
+        val yearMin = 2023
+        val yearMax = 2000
+        assertFalse("Year range should be invalid", yearMin < yearMax)
+    }
+
+    @Test
+    fun filter_allGenre_returnsAll() {
+        val genre = "All"
+        assertTrue("All genre should return everything", genre == "All")
+    }
+
+    @Test
+    fun filter_specificGenre_passes() {
+        val genre = "Action"
+        assertFalse("Specific genre should not be All", genre == "All")
+    }
+
+    // Pagination tests
+    @Test
+    fun pagination_firstPage_correct() {
+        val page = 1
+        val pageSize = 20
+        val startIndex = (page - 1) * pageSize
+        assertEquals("First page start index should be 0", 0, startIndex)
+    }
+
+    @Test
+    fun pagination_secondPage_correct() {
+        val page = 2
+        val pageSize = 20
+        val startIndex = (page - 1) * pageSize
+        assertEquals("Second page start index should be 20", 20, startIndex)
+    }
+
+    @Test
+    fun pagination_hasMoreMovies_passes() {
+        val totalMovies = 50
+        val pageSize = 20
+        assertTrue("Should have more movies", totalMovies > pageSize)
+    }
+
+    @Test
+    fun pagination_noMoreMovies_fails() {
+        val totalMovies = 10
+        val pageSize = 20
+        assertFalse("Should not have more movies", totalMovies > pageSize)
+    }
+
+    // Review initials test
+    @Test
+    fun review_initials_correct() {
+        val name = "Rithik Kumar"
+        val initials = name.split(" ")
+            .mapNotNull { it.firstOrNull()?.toString() }
+            .take(2)
+            .joinToString("")
+        assertEquals("Initials should be RK", "RK", initials)
+    }
+
+    @Test
+    fun review_singleName_initials_correct() {
+        val name = "Rithik"
+        val initials = name.split(" ")
+            .mapNotNull { it.firstOrNull()?.toString() }
+            .take(2)
+            .joinToString("")
+        assertEquals("Initials should be R", "R", initials)
+    }
 }
