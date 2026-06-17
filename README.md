@@ -20,6 +20,28 @@ The goal is to create a robust and scalable platform for browsing, rating and re
    * Connected to all 3 backend microservices (Auth, Movie Catalogue, Ratings & Reviews)
    * unit tests covering signup, login, search, filter, pagination and review validation
 
+#### How the Android App Features Work
+
+**Movie Loading**
+On startup, the app loads all available movies (~21,000) from the Movie Catalogue Service by paginating through the `/movies/` endpoint (50 per request). These are displayed using infinite scroll — 20 movies render initially, and more load automatically as the user scrolls down.
+
+**Genre Filter**
+Genre chips appear at the top of the home screen, populated from the `/movies/genres` endpoint. Tapping a genre calls the `/movies/filter?genre=X` endpoint and loads all movies of that genre across the full dataset (not just the loaded ones) by paginating through all result pages. For example, tapping "Drama" loads all 12,000+ drama movies. Since movies can belong to multiple genres, a single movie may appear under several genre chips (e.g. a film tagged Thriller, Horror and Drama shows up in all three).
+
+**Advanced Filter**
+A filter icon in the top bar opens a bottom sheet where the user can filter by year range (min/max), age rating, and language. These combine with the selected genre and call `/movies/filter` with all active parameters. A Clear button resets all filters.
+
+Note on age ratings: The dataset uses American (MPAA) and US TV rating systems, not European ones. Valid rating values include `G`, `PG`, `PG-13`, `R`, `NC-17`, the older `APPROVED` and `PASSED`, and TV ratings like `TV-G`, `TV-PG`, `TV-14`, `TV-MA`. European-style ratings such as PG-11, PG-15, or PG-16 do not exist in this dataset.
+
+**Search**
+The search bar performs a full-text search via the `/movies/search` endpoint with a 500ms debounce (it waits until the user stops typing before sending the request). The backend uses MongoDB `$text` search, which matches whole words and is case-insensitive. Results display through the same infinite scroll mechanism.
+
+**Reviews**
+On a movie's detail screen, logged-in users can write reviews with a 1-5 star rating, which are sent to the Ratings & Reviews Service (port 8002) with a JWT token. Users can read all reviews for a movie and delete their own reviews — the delete button only appears on reviews they authored.
+
+**Robust Data Handling**
+The `sample_mflix` dataset contains some movies with corrupted fields (e.g. malformed year values like `"1994è1998"`). The app parses these safely — corrupted entries are skipped individually rather than crashing the whole list, so every genre and filter still works reliably.
+
 ### 2. Authentication Microservice
 * Technology: Python, FastAPI, PostgreSQL, Docker
 * Port: `8000`
@@ -67,6 +89,7 @@ Interactive API documentation is available at `http://localhost:8001/docs` while
 ### i. Prerequisites
 Before you begin, ensure the following tools are installed on your system:
 - [Docker](https://www.docker.com/)
+- [JDK 17 or higher](https://www.oracle.com/java/technologies/downloads/) (required for building the Android app)
 - [Android Studio](https://developer.android.com/studio) with an Android Virtual Device (API 26+)
 - [Visual Studio Code](https://code.visualstudio.com/) (optional, for viewing backend services)
 
@@ -91,6 +114,7 @@ docker compose up
 Once running, the following services will be available:
 - Auth Service: `http://localhost:8000`
 - Movie Catalogue Service: `http://localhost:8001`
+- Ratings & Reviews Service: `http://localhost:8002`
 
 ### v. Running the Android Application
 1. Open Android Studio
@@ -101,6 +125,7 @@ Once running, the following services will be available:
 6. Make sure Docker services are running before launching the app — the app connects to:
    - Auth Service: `http://10.0.2.2:8000`
    - Movie Catalogue: `http://10.0.2.2:8001`
+   - Ratings & Reviews: `http://10.0.2.2:8002`
 
 ### vi. Common Issues & Troubleshooting
 | Issue | Solution |
@@ -114,7 +139,7 @@ Once running, the following services will be available:
 | Login/Signup not working | Make sure Auth Service is running on port 8000 |
 | Docker won't start | Make sure Docker Desktop is running in the background |
 | Reviews not loading | Make sure Ratings & Reviews Service is running on port 8002 |
-| Search not returning results | Try a partial word instead of full word (e.g. "Godfa" instead of "Godfather") |
+| Search not returning results | Use complete words rather than partial ones (e.g. "Godfather" instead of "Godfa"), as search matches whole words |
 | App shows black screen on launch | Wait 10-15 seconds for all Docker services to fully start, then relaunch |
 | Review submission fails | Make sure you are logged in before submitting a review |
 

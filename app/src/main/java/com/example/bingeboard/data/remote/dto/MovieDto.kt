@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName
 data class MovieDto(
     @SerializedName("_id")     val id: String = "",
     @SerializedName("title")   val title: String? = null,
-    @SerializedName("year")    val year: Int? = null,
+    @SerializedName("year") val year: String? = null,
     @SerializedName("genres")  val genres: List<String>? = null,
     @SerializedName("cast")    val cast: List<String>? = null,
     @SerializedName("poster")  val poster: String? = null,
@@ -24,9 +24,9 @@ data class MovieDto(
 )
 
 data class ImdbDto(
-    @SerializedName("rating") val rating: Double? = null,
-    @SerializedName("votes")  val votes: Int? = null,
-    @SerializedName("id")     val id: Int? = null
+    @SerializedName("rating") val rating: String? = null,
+    @SerializedName("votes")  val votes: String? = null,
+    @SerializedName("id")     val id: String? = null
 )
 
 data class AwardsDto(

@@ -13,23 +13,25 @@ import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+// Holds everything the home screen needs to draw itself at any moment.
+// Compose watches this and redraws whenever it changes.
 data class HomeUiState(
-    val movies: List<Movie> = emptyList(),
-    val displayedMovies: List<Movie> = emptyList(),
-    val genres: List<String> = emptyList(),
-    val selectedGenre: String = "All",
-    val searchQuery: String = "",
-    val currentUser: User? = null,
-    val isLoading: Boolean = false,
-    val isLoadingMore: Boolean = false,
-    val yearMin: String = "",
-    val yearMax: String = "",
-    val selectedRated: String = "",
-    val selectedLanguage: String = "",
-    val showFilterSheet: Boolean = false,
-    val currentPage: Int = 1,
-    val pageSize: Int = 20,
-    val hasMoreMovies: Boolean = true
+    val movies: List<Movie> = emptyList(),          // the full list of loaded movies
+    val displayedMovies: List<Movie> = emptyList(), // the slice currently shown on screen
+    val genres: List<String> = emptyList(),         // genre chips (starts with "All")
+    val selectedGenre: String = "All",              // which genre chip is active
+    val searchQuery: String = "",                   // current text in the search bar
+    val currentUser: User? = null,                  // logged-in user, or null if guest
+    val isLoading: Boolean = false,                 // full-screen loading spinner
+    val isLoadingMore: Boolean = false,             // small spinner when scrolling for more
+    val yearMin: String = "",                       // advanced filter: earliest year
+    val yearMax: String = "",                       // advanced filter: latest year
+    val selectedRated: String = "",                 // advanced filter: age rating
+    val selectedLanguage: String = "",              // advanced filter: language
+    val showFilterSheet: Boolean = false,           // is the filter bottom sheet open
+    val currentPage: Int = 1,                       // current page for infinite scroll
+    val pageSize: Int = 20,                          // how many movies to add per scroll
+    val hasMoreMovies: Boolean = true               // are there more movies left to show
 )
 
 @HiltViewModel
@@ -38,27 +40,34 @@ class HomeViewModel @Inject constructor(
     private val authRepository: AuthRepository
 ) : ViewModel() {
 
+    // Private mutable state we update, exposed as read-only to the UI.
     private val _uiState = MutableStateFlow(HomeUiState())
     val uiState: StateFlow<HomeUiState> = _uiState.asStateFlow()
+
+    // Keeps track of the running search so we can cancel it (used for debounce).
     private var searchJob: Job? = null
+
+    // The full result set we are currently paging through (all movies,
+    // or the filtered/searched subset). displayedMovies is a slice of this.
     private var allFilteredMovies: List<Movie> = emptyList()
 
+    // Load movies, genres and the current user as soon as the screen opens.
     init {
         loadData()
     }
 
+    // Fetches all movies, the genre list and the logged-in user from the repository.
     private fun loadData() {
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true) }
             val movies = movieRepository.getAllMovies()
-            val genres = listOf("All") + movieRepository.getGenres()
+            val genres = listOf("All") + movieRepository.getGenres() // "All" sits at the front
             val user = authRepository.getCurrentUser()
             allFilteredMovies = movies
-            println("Loaded ${movies.size} movies")
             _uiState.update {
                 it.copy(
                     movies = movies,
-                    displayedMovies = movies.take(20),
+                    displayedMovies = movies.take(20), // only show first 20 to start
                     genres = genres,
                     currentUser = user,
                     isLoading = false,
@@ -68,14 +77,18 @@ class HomeViewModel @Inject constructor(
         }
     }
 
+    // Called by the UI when the user scrolls near the bottom.
+    // Reveals the next batch of 20 movies from the list we already have.
     fun loadMore() {
         val currentState = _uiState.value
+        // Don't do anything if we're already loading or there's nothing left.
         if (currentState.isLoadingMore || !currentState.hasMoreMovies) return
 
         viewModelScope.launch {
             _uiState.update { it.copy(isLoadingMore = true) }
-            delay(300)
+            delay(300) // tiny pause so the loading spinner is visible
             val nextPage = currentState.currentPage + 1
+            // Take up to nextPage*20 items, but never more than we actually have.
             val endIndex = minOf(nextPage * currentState.pageSize, allFilteredMovies.size)
             val newMovies = allFilteredMovies.take(endIndex)
             _uiState.update {
@@ -89,11 +102,29 @@ class HomeViewModel @Inject constructor(
         }
     }
 
+    // Called when the user taps a genre chip.
     fun onGenreSelected(genre: String) {
         _uiState.update { it.copy(selectedGenre = genre) }
-        applyFilters()
+        if (genre == "All") {
+            allFilteredMovies = _uiState.value.movies
+            println("All movies count: ${_uiState.value.movies.size}")
+            _uiState.update {
+                it.copy(
+                    displayedMovies = it.movies.take(20),
+                    currentPage = 1,
+                    hasMoreMovies = it.movies.size > 20,
+                    isLoading = false
+                )
+            }
+        } else {
+            // Any other genre goes through the API filter.
+            applyFiltersWithGenre(genre)
+        }
     }
 
+    // Called on every keystroke in the search bar.
+    // We use a 500ms debounce: cancel the previous pending search and start
+    // a new one, so the API is only hit once the user pauses typing.
     fun onSearchQueryChanged(query: String) {
         _uiState.update { it.copy(searchQuery = query) }
         searchJob?.cancel()
@@ -103,7 +134,9 @@ class HomeViewModel @Inject constructor(
         }
     }
 
+    // Actually performs the search once the debounce delay has passed.
     private fun performSearch(query: String) {
+        // If the search box was cleared, go back to showing all movies.
         if (query.isEmpty()) {
             allFilteredMovies = _uiState.value.movies
             _uiState.update {
@@ -119,7 +152,6 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true) }
             val results = movieRepository.searchMovies(query)
-            println("Search results for '$query': ${results.size}")
             allFilteredMovies = results
             _uiState.update {
                 it.copy(
@@ -132,6 +164,8 @@ class HomeViewModel @Inject constructor(
         }
     }
 
+    // The next four functions just store what the user types/picks in the
+    // filter sheet. The actual filtering happens when they tap "Apply".
     fun onYearMinChanged(year: String) {
         _uiState.update { it.copy(yearMin = year) }
     }
@@ -148,15 +182,20 @@ class HomeViewModel @Inject constructor(
         _uiState.update { it.copy(selectedLanguage = language) }
     }
 
+    // Opens or closes the advanced filter bottom sheet.
     fun toggleFilterSheet() {
         _uiState.update { it.copy(showFilterSheet = !it.showFilterSheet) }
     }
 
+    // Called when the user taps "Apply" in the filter sheet.
+    // Closes the sheet and runs the filter with whatever is currently selected.
     fun applyAdvancedFilter() {
         _uiState.update { it.copy(showFilterSheet = false) }
-        applyFilters()
+        val currentState = _uiState.value
+        applyFiltersWithGenre(currentState.selectedGenre)
     }
 
+    // Resets everything back to the default "show all movies" state.
     fun clearFilters() {
         allFilteredMovies = _uiState.value.movies
         _uiState.update {
@@ -175,28 +214,33 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    private fun applyFilters() {
+    // Core filtering logic. We pass the genre in directly as a parameter
+    // (instead of reading it from state) because the state update from
+    // onGenreSelected might not have applied yet - this avoids a stale-state bug.
+    private fun applyFiltersWithGenre(genre: String) {
         val currentState = _uiState.value
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true) }
 
             val filtered = when {
-                currentState.selectedGenre != "All" ||
+                // If any filter is active, ask the backend for matching movies.
+                genre != "All" ||
                         currentState.yearMin.isNotEmpty() ||
                         currentState.yearMax.isNotEmpty() ||
                         currentState.selectedRated.isNotEmpty() ||
                         currentState.selectedLanguage.isNotEmpty() -> {
                     movieRepository.filterMovies(
-                        genre = if (currentState.selectedGenre == "All") null else currentState.selectedGenre,
+                        genre = if (genre == "All") null else genre,
                         yearMin = currentState.yearMin.toIntOrNull(),
                         yearMax = currentState.yearMax.toIntOrNull(),
                         rated = currentState.selectedRated.ifEmpty { null },
                         language = currentState.selectedLanguage.ifEmpty { null }
                     )
                 }
+                // Otherwise nothing is filtered, so just show all movies.
                 else -> currentState.movies
             }
-
+            println("Filter results for genre '$genre': ${filtered.size}")
             allFilteredMovies = filtered
             _uiState.update {
                 it.copy(
