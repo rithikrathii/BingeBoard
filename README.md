@@ -149,9 +149,8 @@ A `.env` file is already included in the repository with all required variables 
 
 ### iv. Running the Application with Docker
 Make sure Docker Desktop is running in the background, then from the terminal run:
-docker compose build
+> docker compose up --build
 
-docker compose up
 Once running, the following services will be available:
 - Auth Service: `http://localhost:8000`
 - Movie Catalogue Service: `http://localhost:8001`
