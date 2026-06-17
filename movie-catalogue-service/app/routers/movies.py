@@ -1,10 +1,10 @@
+import logging
 from fastapi import APIRouter, Query, HTTPException
 from app.database import movie_collection
 from bson import ObjectId
 
 # API endpoint object
 router = APIRouter()
-
 
 def serialize(movie):
     """Converts MongoDB ObjectId _id field to string for JSON serialization."""
@@ -26,7 +26,10 @@ def list_movies(page: int = 1, limit: int = Query(10, le=50)):
 
     # fetches movies from the collection
     movies = movie_collection.find().skip(offset).limit(limit)
-    return [serialize(m) for m in movies]  # serializes the movies and returns them
+    results = [serialize(m) for m in movies]  # serializes the movies and returns them
+
+    logging.info("list_movies", extra={"page": page, "limit": limit, "returned": len(results)})
+    return results
 
 
 @router.get("/search")
@@ -43,21 +46,24 @@ def search_movies(
         List: List of movies matching the search query and sorted by relevance.
     """
     offset = (page - 1) * limit
-    
+
     # filters with search string and relevance
     results_unsorted = movie_collection.find(
             {"$text": {"$search": q}}, {"score": {"$meta": "textScore"}}
         )
-    
+
     # sorts results by relevance, year and frequency
     results_sorted = results_unsorted.sort([
         ("score", {"$meta": "textScore"}),
         ("year", 1)
     ])
-    
+
     # displays results based on current page and limit
     results_paginated = results_sorted.skip(offset).limit(limit)
-    return [serialize(m) for m in results_paginated]
+    results = [serialize(m) for m in results_paginated]
+
+    logging.info("search_movies", extra={"query": q, "page": page, "limit": limit, "returned": len(results)})
+    return results
 
 
 @router.get("/filter")
@@ -109,11 +115,18 @@ def filter_movies(
         query["rated"] = rated
 
     if language is not None:
-        query["languages"] = {"$in": [language]}
+        query["languages"] = {"$regex": f"^{language}$", "$options": "i"}
 
     offset = (page - 1) * limit
     results = movie_collection.find(query).skip(offset).limit(limit)
-    return [serialize(m) for m in results]
+    serialized_results = [serialize(m) for m in results]
+
+    logging.info("filter_movies", extra={
+        "genre": genre, "year_min": year_min, "year_max": year_max,
+        "rated": rated, "language": language, "page": page, "limit": limit,
+        "returned": len(serialized_results)
+    })
+    return serialized_results
 
 
 @router.get("/genres")
@@ -126,6 +139,8 @@ def list_genres():
         "genres"
     )  # gets all unique genres from sample_mflix
     sorted_genres = sorted(g for g in distinct_genres if g)
+
+    logging.info("list_genres", extra={"count": len(sorted_genres)})
     return sorted_genres
 
 
@@ -146,10 +161,14 @@ def get_movie(movie_id: str):
     try:
         oid = ObjectId(movie_id)
     except Exception:
+        logging.warning("get_movie_invalid_id", extra={"movie_id": movie_id})
         raise HTTPException(status_code=400, detail="Invalid movie ID format")
 
     # try to finds the movie with valid _id
     movie_found = movie_collection.find_one({"_id": oid})
     if movie_found is None:
+        logging.warning("get_movie_not_found", extra={"movie_id": movie_id})
         raise HTTPException(status_code=404, detail="Movie not found")
+
+    logging.info("get_movie", extra={"movie_id": movie_id})
     return serialize(movie_found)
