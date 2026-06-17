@@ -3,6 +3,17 @@ The Distributed Movie Review System is a project based on a microservice archite
 It was developed as part of the course "Programming Distributed Systems". 
 The goal is to create a robust and scalable platform for browsing, rating and reviewing movies.
 
+## Project Goals
+This project demonstrates core concepts of distributed systems through a working prototype that mirrors real-world platforms like IMDb or Rotten Tomatoes. Specifically, it aims to:
+
+* Design and implement a microservices-based architecture with independently deployable backend services
+* Demonstrate inter-service communication through RESTful APIs
+* Showcase containerization and orchestration using Docker and docker-compose
+* Implement secure authentication and role-based access control across services
+* Apply data consistency and management practices across multiple database systems (MongoDB for movie/review data, PostgreSQL for user authentication)
+* Build a functional Android frontend that integrates with all backend microservices
+* Practice modern software engineering workflows including version control, structured logging, automated testing and documentation
+
 ## System Architecture
 
 ### 1. Android App
@@ -82,7 +93,37 @@ The `sample_mflix` dataset contains some movies with corrupted fields (e.g. malf
 Interactive API documentation is available at `http://localhost:8001/docs` while the service is running.
 
 ### 4. Ratings & Reviews Microservice
-- Coming soon
+
+Microservice for movie ratings and reviews. Part of the Distributed Movie Review System project, Group 5, Summer Semester 2026.
+
+#### Stack
+- Python + FastAPI
+- MongoDB
+- Docker
+- JWT authentication
+
+#### Run locally
+cp .env.sample .env
+uvicorn src.main:app --reload --port 8001
+
+#### Run with Docker
+cp .env.sample .env
+docker compose up -d --build
+
+#### Endpoints
+| Method | Endpoint | Description |
+|--------|----------|--------------|
+| GET | `/ratings/{movie_id}` | All ratings for a movie |
+| GET | `/ratings/{movie_id}/average` | Average rating |
+| POST | `/ratings` | Add a rating (auth required) |
+| PUT | `/ratings/{id}` | Update your rating (auth required) |
+| DELETE | `/ratings/{id}` | Delete your rating (auth required) |
+| GET | `/reviews/{movie_id}` | All reviews for a movie |
+| GET | `/reviews/single/{id}` | Single review |
+| POST | `/reviews` | Write a review (auth required) |
+| PUT | `/reviews/{id}` | Edit your review (auth required) |
+| DELETE | `/reviews/{id}` | Delete your review (auth required) |
+| GET | `/health` | Health check |
 
 ## Running the Application
 
