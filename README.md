@@ -190,7 +190,7 @@ Once running, the following services will be available:
 | Rithik Kumar - 31522 | Android Frontend | UI implementation, Jetpack Compose screens, API integration, Navigation, Authentication flow, Infinite scroll pagination, Advanced filter UI (year, rating, language), Reviews integration (write/read/delete with star ratings), case-insensitive search, proper error messages for login/signup, 35 unit tests |
 | Emre Banri - 33672 | Auth Service | FastAPI authentication service, PostgreSQL integration, password hashing, JWT login flow, protected endpoints, Docker Compose integration and testing |
 |Çağla Nur Yurdasal - 34367| Movie Catalogue Service | FastAPI movie catalogue microservice (endpoints for listing, search, filtering, genres, single movie lookup), MongoDB Atlas integration with sample_mflix dataset, Pydantic models, structured JSON logging, Dockerfile with non-root user, docker-compose integration, 11 pytest tests, API field alignment support for Android integration | | Movie Service | |
-| | Reviews Service | |
+| Farhan Tahmid - 31416 | Reviews Service | FastAPI ratings and reviews microservice with MongoDB integration, JWT-authenticated endpoints for adding/updating/deleting ratings and writing/editing/deleting reviews, average rating calculation, Docker integration |
 
 ## Acknowledgements
 The work of team members and their individual contributions are reflected in the GitLab commit history and the Contribution Matrix above.
