@@ -28,7 +28,3 @@ __pycache__/
 .idea/tasks.xml
 .idea/shelf/
 .idea/
-
-.env
-.env.*
-!.env.example
