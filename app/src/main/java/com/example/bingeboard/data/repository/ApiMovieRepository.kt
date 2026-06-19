@@ -20,8 +20,6 @@ class ApiMovieRepository @Inject constructor(
 ) : MovieRepository {
 
     // Kept for genre lookups and as a fallback for getMovieById.
-    // NOT used for the home screen's initial load anymore - that
-    // uses getMoviesPage() below for true lazy infinite scroll.
     override suspend fun getAllMovies(): List<Movie> {
         return try {
             val allMovies = mutableListOf<Movie>()

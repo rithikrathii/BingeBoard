@@ -52,7 +52,7 @@ fun BingeBoardNavGraph(
             CircularProgressIndicator(color = GoldAccent)
         }
     } else {
-        val startDestination = if (isLoggedInState.value == true) Screen.Home.route else Screen.Login.route
+        val startDestination = Screen.Login.route
         val showBottomBar = currentDestination?.route in listOf(Screen.Home.route, Screen.About.route)
 
         Scaffold(

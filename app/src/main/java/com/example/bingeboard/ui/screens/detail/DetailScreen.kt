@@ -116,6 +116,27 @@ fun DetailScreen(
                         lineHeight = 22.sp
                     )
 
+                    // Cast section
+                    if (movie.cast.isNotEmpty()) {
+                        Spacer(modifier = Modifier.height(24.dp))
+
+                        Text(
+                            text = "Cast",
+                            style = MaterialTheme.typography.titleMedium,
+                            color = Color.White,
+                            fontWeight = FontWeight.Bold
+                        )
+
+                        Spacer(modifier = Modifier.height(8.dp))
+
+                        Text(
+                            text = movie.cast.joinToString(" · "),
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = SecondaryText,
+                            lineHeight = 22.sp
+                        )
+                    }
+
                     Spacer(modifier = Modifier.height(32.dp))
 
                     SectionHeader(
