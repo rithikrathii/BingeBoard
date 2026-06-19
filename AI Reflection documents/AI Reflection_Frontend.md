@@ -89,22 +89,7 @@ I opened the file in Notepad, made the change, rebuilt the Docker container with
 
 ---
 
-### Example 4 — Refactoring to True Lazy Infinite Scroll
-
-My teammate Cagla pointed out that Docker logs showed the app firing 400+ API requests immediately on startup instead of loading pages as the user scrolls. She was right — the app was loading all 21,000+ movies upfront before showing anything.
-
-**Prompt:**
-> my teammate says docker log shows app is fetching everything at once on startup like 400+ requests its not real infinite scroll how to fix
-
-**Claude response:**
-> True lazy infinite scroll means you only fetch the next page from the network when the user actually scrolls near the bottom — not all at once on startup. Right now getAllMovies() eagerly fetches everything before showing anything which is why startup is slow and Docker shows hundreds of requests immediately.
-> Add a getMoviesPage(page, limit) function that fetches exactly one page. On startup only call this for page 1 and show those movies immediately. Then in loadMore() instead of revealing the next slice of an already loaded list call getMoviesPage() for the next page and append the result. The network request only happens at scroll time not at startup.
-
-I added getMoviesPage() to the repository interface and implementation, rewrote loadData() to only fetch page 1, and updated loadMore() to call the API directly when the user scrolls. I verified by watching Docker logs while scrolling — pages loaded one at a time only when the user scrolled down. Startup became near instant.
-
----
-
-### Example 5 — Reviews Feature Architecture
+### Example 4 — Reviews Feature Architecture
 
 Before writing any code for the reviews feature I wanted to understand how the delete button logic should work:
 
@@ -124,8 +109,6 @@ Before writing any code for the reviews feature I wanted to understand how the d
 I implemented the ReviewCard based on this explanation, wired it up to the DetailViewModel which fetches the current user's email after login, and tested that the delete button appeared only on my own reviews and not on others.
 
 ---
-
-## 3. Reflection
 
 ## 3. Reflection
 
