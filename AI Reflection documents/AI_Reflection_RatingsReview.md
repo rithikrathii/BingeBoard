@@ -207,5 +207,7 @@ Being allowed to use AI in this project, and then maintaining an AI reflection d
 2. From my work, I learnt to be security focused. Therefore I will follow the Zero Trust security framework, to verify and not to blindly trust.
 
 To verify AI answers in critical responses, I used google to verify with official documentation, ask colleagues how they implemented it, and use a second AI for cross checking answers before proceeding. 
+
 AI is of great assistance if it is used in the correct way. And openly allowing AI usage for this course inspired me to learn to use AI as an assistant, instead of letting AI behave autonomously. I could research lots of topics and concepts in a short time, and with lower efforts, compared to opening google and other forums to search for previously asked questions there. I could explain my error scenario to AI in my use case, to get personalized suggestions, instead of generalized suggestions which don't always fit individual issues.
+
 **One realization:** AI can support learning more effectively and efficiently, only if it is used the correct way. After using AI in this project, I found out some plus-points of the correct use of AI, which gives me confidence to do more, while also learning (and not discarding information once the task is done). Therefore, I feel, if there would be some lectures/workshops teaching “Assistive AI usage”, explaining the pros and cons, it will benefit both the students and the university. 
