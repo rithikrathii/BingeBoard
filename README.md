@@ -202,15 +202,3 @@ Make sure Docker services are running before launching the app — the app conne
 | Review submission fails | Make sure you are logged in before submitting a review |
 | Year filter not working | Make sure both From and To year values are entered |
 | Gradle JDK error on macOS | Go to Settings → Build → Gradle → change Gradle JDK to Embedded JDK |
-
-## Contribution Matrix
-| Name | Role | Contributions |
-|------|------|---------------|
-| Çağla Nur Yurdasal - 34367 | Project Lead | Coordinated team communication and task delegation, managed GitLab repository setup (docker-compose.yml, .gitignore, .env.example), resolved merge conflicts and onboarding issues, communicated with instructors regarding team changes (teammate withdrawal), in addition to full ownership of the Movie Catalogue Service (see below) |
-| Rithik Kumar - 31522 | Android Frontend | UI implementation, Jetpack Compose screens, API integration, Navigation, Authentication flow, True lazy infinite scroll pagination, Advanced filter UI (genre, year range, age rating, language), Reviews integration (write/read/delete with star ratings), proper error messages for login/signup, cast display on detail screen, unit tests |
-| Emre Banri - 33672 | Auth Service | FastAPI authentication service, PostgreSQL integration, password hashing, JWT login flow, protected endpoints, Docker Compose integration and testing |
-| Çağla Nur Yurdasal - 34367 | Movie Catalogue Service | FastAPI movie catalogue microservice (endpoints for listing, search, filtering, genres, single movie lookup), MongoDB Atlas integration with sample_mflix dataset, Pydantic models, structured JSON logging, Dockerfile with non-root user, docker-compose integration, 11 pytest tests, API field alignment support for Android integration |
-| Farhan Tahmid - 31416 | Reviews Service | FastAPI ratings and reviews microservice with MongoDB integration, JWT-authenticated endpoints for adding/updating/deleting ratings and writing/editing/deleting reviews, average rating calculation, Docker integration |
-
-## Acknowledgements
-The work of team members and their individual contributions are reflected in the GitLab commit history and the Contribution Matrix above.
